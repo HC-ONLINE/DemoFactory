@@ -1,0 +1,783 @@
+---
+import Timeline from "./Timeline.astro";
+
+interface DemoLink {
+  label: string;
+  href: string;
+}
+
+interface DemoEvent {
+  time: string;
+  title: string;
+  venue: string;
+  icon: string;
+  imageLabel: string;
+  image: string;
+}
+
+interface DemoData {
+  title: string;
+  description: string;
+  navigation: DemoLink[];
+  hero: {
+    eyebrow: string;
+    title: string;
+    date: string;
+    location: string;
+    strapline: string;
+    image: string;
+  };
+  story: {
+    eyebrow: string;
+    title: string;
+    signature: string;
+    imageLabel: string;
+    image: string;
+  };
+  schedule: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+  };
+  events: DemoEvent[];
+  venue: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    addressLabel: string;
+    address: string;
+    transportLabel: string;
+    transport: string;
+    mapLabel: string;
+    mapUrl: string;
+  };
+  dressCode: {
+    eyebrow: string;
+    title: string;
+    quote: string;
+    cards: Array<{
+      label: string;
+      title: string;
+      description: string;
+    }>;
+  };
+  rsvp: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    submitLabel: string;
+  };
+  footer: {
+    brand: string;
+    copyright: string;
+    links: DemoLink[];
+  };
+}
+
+const { data } = Astro.props as { data: DemoData };
+const mobileLinks = [
+  ...data.navigation,
+  { label: data.rsvp.submitLabel, href: "#rsvp" },
+];
+---
+
+<div
+  class="elite-vows-shell overflow-hidden bg-[#f6f1e8] text-[#1f1a17]"
+  id="elite-vows-root"
+>
+  <nav
+    class="fixed inset-x-0 top-0 z-50 border-b border-[#d8c6ab]/35 bg-[#f6f1e8]/80 backdrop-blur-xl"
+  >
+    <div
+      class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10"
+    >
+      <a
+        class="[font-family:'Playfair Display',serif] text-[1.45rem] tracking-[0.22em] text-[#1f1a17] uppercase"
+        href="#elite-vows-root">ELITE VOWS</a
+      >
+      <div class="hidden items-center gap-8 md:flex">
+        {
+          data.navigation.map((item) => (
+            <a
+              class="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#6a5a4d] transition-colors hover:text-[#ab8445]"
+              href={item.href}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          class="rounded-full bg-[#1f1a17] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.34em] text-white transition-colors hover:bg-[#ab8445]"
+          href="#rsvp">{data.rsvp.submitLabel}</a
+        >
+      </div>
+      <button
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d8c6ab] text-[#1f1a17] md:hidden"
+        id="mobile-menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="material-symbols-outlined text-[22px]">menu</span>
+      </button>
+    </div>
+    <div
+      class="hidden border-t border-[#d8c6ab]/35 bg-[#f6f1e8] md:hidden"
+      id="mobile-menu"
+    >
+      <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6">
+        {
+          mobileLinks.map((item) => (
+            <a
+              class="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#6a5a4d] transition-colors hover:text-[#ab8445]"
+              href={item.href}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
+
+  <section class="relative isolate min-h-screen overflow-hidden pt-20">
+    <div
+      class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.75),rgba(246,241,232,0.2)_35%,rgba(198,166,114,0.12)_58%,rgba(33,27,20,0.92)_100%)]"
+    >
+    </div>
+    <div
+      class="hero-parallax absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.1),rgba(18,14,10,0.35)),linear-gradient(135deg,rgba(255,255,255,0.4),rgba(199,172,126,0.25))]"
+      data-placeholder="Hero image pending"
+    >
+      <img
+        alt={data.hero.title}
+        class="absolute inset-0 hidden h-full w-full object-cover grayscale md:block"
+        decoding="async"
+        loading="eager"
+        src={data.hero.image}
+      />
+      <div
+        class="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.12),rgba(18,14,10,0.45))]"
+      >
+      </div>
+      <div class="absolute inset-0 border border-white/12 m-6 rounded-[2.5rem]">
+      </div>
+      <div class="absolute inset-0 flex items-center justify-center px-6">
+        <div
+          class="max-w-4xl rounded-4xl border border-white/18 bg-white/10 px-8 py-10 text-center text-white shadow-[0_30px_80px_rgba(0,0,0,0.25)] backdrop-blur-md md:px-14 md:py-16"
+        >
+          <p
+            class="text-[10px] font-semibold uppercase tracking-[0.45em] text-[#f4e1b7]"
+          >
+            {data.hero.eyebrow}
+          </p>
+          <h1
+            class="mt-5 [font-family:'Playfair Display',serif] text-5xl italic leading-[0.95] text-white md:text-8xl"
+          >
+            {data.hero.title}
+          </h1>
+          <p
+            class="mt-6 text-sm uppercase tracking-[0.28em] text-white/80 md:text-[0.95rem]"
+          >
+            {data.hero.date} · {data.hero.location}
+          </p>
+        </div>
+      </div>
+      <div class="absolute inset-x-0 bottom-10 flex justify-center">
+        <p
+          class="rounded-full border border-white/15 bg-black/15 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-white/85"
+        >
+          {data.hero.strapline}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 md:grid-cols-12 md:items-center md:gap-16 lg:px-10"
+    id="journey"
+  >
+    <div class="reveal-left md:col-span-5">
+      <div
+        class="overflow-hidden rounded-[2.25rem] border border-[#d7c8b1] bg-[#efe6d7] shadow-[0_30px_70px_rgba(44,31,18,0.10)]"
+      >
+        <div class="media-frame relative aspect-3/4">
+          <img
+            alt={data.story.title}
+            class="absolute inset-0 h-full w-full object-cover grayscale"
+            src={data.story.image}
+          />
+          <div
+            class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.28))]"
+          >
+          </div>
+          <div class="absolute inset-0 border border-white/35"></div>
+          <div class="absolute inset-0 flex items-end p-6 text-center">
+            <div
+              class="max-w-xs rounded-3xl border border-white/20 bg-black/25 px-5 py-4 text-xs uppercase tracking-[0.35em] text-white/90 backdrop-blur-sm"
+            >
+              {data.story.imageLabel}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-right md:col-span-6 md:col-start-7">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#ab8445]"
+      >
+        {data.story.eyebrow}
+      </p>
+      <h2
+        class="mt-4 max-w-xl [font-family:'Playfair Display',serif] text-4xl text-[#1f1a17] md:text-6xl"
+      >
+        {data.story.title}
+      </h2>
+      <div
+        class="prose prose-neutral mt-8 max-w-none prose-p:my-0 prose-p:text-[1.05rem] prose-p:leading-8 prose-p:text-[#6a5a4d]"
+      >
+        <slot />
+      </div>
+      <div class="mt-10 flex items-center gap-4">
+        <div class="h-px w-12 bg-[#ab8445]"></div>
+        <p
+          class="text-[10px] font-semibold uppercase tracking-[0.35em] text-[#1f1a17]"
+        >
+          {data.story.signature}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#efe8dd] py-20 md:py-28" id="schedule">
+    <div class="mx-auto max-w-7xl px-6 text-center lg:px-10 reveal">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#ab8445]"
+      >
+        {data.schedule.eyebrow}
+      </p>
+      <h2
+        class="mt-4 [font-family:'Playfair Display',serif] text-4xl text-[#1f1a17] md:text-6xl"
+      >
+        {data.schedule.title}
+      </h2>
+      <p
+        class="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#6a5a4d] md:text-base"
+      >
+        {data.schedule.subtitle}
+      </p>
+      <div class="mx-auto mt-8 h-px w-24 bg-[#c8a24d]"></div>
+    </div>
+    <div class="mt-16">
+      <Timeline events={data.events} />
+    </div>
+  </section>
+
+  <section
+    class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 md:grid-cols-2 md:items-center md:gap-16 lg:px-10"
+    id="venue"
+  >
+    <div class="reveal">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#ab8445]"
+      >
+        {data.venue.eyebrow}
+      </p>
+      <h2
+        class="mt-4 [font-family:'Playfair Display',serif] text-4xl text-[#1f1a17] md:text-6xl"
+      >
+        {data.venue.title}
+      </h2>
+      <p class="mt-8 text-[1.05rem] leading-8 text-[#6a5a4d]">
+        {data.venue.description}
+      </p>
+      <div class="mt-12 space-y-6">
+        <div class="flex items-start gap-4">
+          <span class="material-symbols-outlined mt-0.5 text-[#ab8445]"
+            >location_on</span
+          >
+          <div>
+            <p
+              class="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#ab8445]"
+            >
+              {data.venue.addressLabel}
+            </p>
+            <p class="mt-1 text-sm leading-7 text-[#1f1a17]">
+              {data.venue.address}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="material-symbols-outlined mt-0.5 text-[#ab8445]"
+            >directions_bus</span
+          >
+          <div>
+            <p
+              class="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#ab8445]"
+            >
+              {data.venue.transportLabel}
+            </p>
+            <p class="mt-1 text-sm leading-7 text-[#1f1a17]">
+              {data.venue.transport}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div
+        class="overflow-hidden rounded-[2.5rem] border border-[#d7c8b1] bg-[#ece2d2] shadow-[0_30px_70px_rgba(44,31,18,0.12)]"
+      >
+        <div
+          class="relative flex min-h-112 items-end bg-[linear-gradient(135deg,rgba(199,172,126,0.52),rgba(248,241,231,0.95))]"
+        >
+          <img
+            alt={data.venue.mapLabel}
+            class="absolute inset-0 h-full w-full object-cover grayscale"
+            src="/elite-vows/maps.jpg"
+          />
+          <div
+            class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.28))]"
+          >
+          </div>
+          <div class="absolute inset-0 border border-white/35"></div>
+          <div
+            class="relative z-10 mb-6 ml-6 rounded-3xl border border-white/20 bg-black/25 px-5 py-4 text-xs uppercase tracking-[0.35em] text-white/90 backdrop-blur-sm"
+          >
+            {data.venue.mapLabel}
+          </div>
+          <a
+            class="relative z-10 mb-6 ml-auto mr-6 rounded-full bg-[#1f1a17] px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.34em] text-white transition-colors hover:bg-[#ab8445]"
+            href={data.venue.mapUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open in maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#1f1a17] py-20 text-white md:py-28" id="dress-code">
+    <div class="mx-auto max-w-7xl px-6 text-center lg:px-10 reveal">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#d6b56f]"
+      >
+        {data.dressCode.eyebrow}
+      </p>
+      <h2
+        class="mt-4 [font-family:'Playfair Display',serif] text-4xl italic md:text-6xl"
+      >
+        {data.dressCode.title}
+      </h2>
+      <div
+        class="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2"
+      >
+        {
+          data.dressCode.cards.map((card, index) => (
+            <div
+              class={`reveal-scale delay-${(index % 4) + 1} border border-white/10 p-10 text-left transition-colors hover:border-[#d6b56f]/50 md:p-12`}
+            >
+              <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#d6b56f]">
+                {card.label}
+              </p>
+              <p class="mt-4 [font-family:'Playfair Display',serif] text-3xl text-white">
+                {card.title}
+              </p>
+              <p class="mt-4 text-sm leading-7 text-white/70">
+                {card.description}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <p
+        class="mx-auto mt-14 max-w-3xl text-sm italic leading-7 text-white/65 md:text-base"
+      >
+        {data.dressCode.quote}
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-240 px-6 py-20 md:py-28 lg:px-10" id="rsvp">
+    <div class="reveal text-center">
+      <p
+        class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#ab8445]"
+      >
+        {data.rsvp.eyebrow}
+      </p>
+      <h2
+        class="mt-4 [font-family:'Playfair Display',serif] text-4xl text-[#1f1a17] md:text-6xl"
+      >
+        {data.rsvp.title}
+      </h2>
+      <p
+        class="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#6a5a4d] md:text-base"
+      >
+        {data.rsvp.intro}
+      </p>
+    </div>
+    <form class="reveal mt-14 space-y-10" id="rsvp-form">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div class="relative">
+          <input
+            class="peer w-full border-b border-[#cdbda3] bg-transparent py-4 text-[#1f1a17] outline-none transition-colors placeholder:text-transparent focus:border-[#ab8445]"
+            id="name"
+            placeholder="Full name"
+            required
+            type="text"
+          />
+          <label
+            class="pointer-events-none absolute left-0 top-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6a5a4d] transition-all peer-focus:-top-4 peer-focus:text-[#ab8445] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-[#ab8445]"
+            for="name">Full name</label
+          >
+        </div>
+        <div class="relative">
+          <input
+            class="peer w-full border-b border-[#cdbda3] bg-transparent py-4 text-[#1f1a17] outline-none transition-colors placeholder:text-transparent focus:border-[#ab8445]"
+            id="email"
+            placeholder="Email address"
+            required
+            type="email"
+          />
+          <label
+            class="pointer-events-none absolute left-0 top-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6a5a4d] transition-all peer-focus:-top-4 peer-focus:text-[#ab8445] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-[#ab8445]"
+            for="email">Email address</label
+          >
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div class="relative">
+          <select
+            class="w-full appearance-none border-b border-[#cdbda3] bg-transparent py-4 text-[#1f1a17] outline-none transition-colors focus:border-[#ab8445]"
+            id="guests"
+          >
+            <option value="1">1 guest</option>
+            <option value="2">2 guests</option>
+            <option value="3">3 guests</option>
+          </select>
+          <label
+            class="absolute left-0 -top-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#ab8445]"
+            for="guests">Number of guests</label
+          >
+          <span
+            class="material-symbols-outlined pointer-events-none absolute right-0 top-4 text-[#6a5a4d]"
+            >expand_more</span
+          >
+        </div>
+        <div class="relative">
+          <select
+            class="w-full appearance-none border-b border-[#cdbda3] bg-transparent py-4 text-[#1f1a17] outline-none transition-colors focus:border-[#ab8445]"
+            id="attendance"
+          >
+            <option value="yes">Will attend</option>
+            <option value="no">Regretfully decline</option>
+          </select>
+          <label
+            class="absolute left-0 -top-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#ab8445]"
+            for="attendance">Attendance</label
+          >
+          <span
+            class="material-symbols-outlined pointer-events-none absolute right-0 top-4 text-[#6a5a4d]"
+            >expand_more</span
+          >
+        </div>
+      </div>
+      <div class="relative">
+        <textarea
+          class="peer w-full border-b border-[#cdbda3] bg-transparent py-4 text-[#1f1a17] outline-none transition-colors placeholder:text-transparent focus:border-[#ab8445]"
+          id="dietary"
+          placeholder="Dietary requirements"
+          rows="3"></textarea>
+        <label
+          class="pointer-events-none absolute left-0 top-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6a5a4d] transition-all peer-focus:-top-4 peer-focus:text-[#ab8445] peer-not-placeholder-shown:-top-4 peer-not-placeholder-shown:text-[#ab8445]"
+          for="dietary">Dietary requirements</label
+        >
+      </div>
+      <div class="pt-4 text-center">
+        <button
+          class="rounded-full bg-[#1f1a17] px-10 py-4 text-[10px] font-semibold uppercase tracking-[0.34em] text-white transition-all duration-300 hover:bg-[#ab8445] hover:tracking-[0.42em]"
+          type="submit">{data.rsvp.submitLabel}</button
+        >
+      </div>
+    </form>
+  </section>
+
+  <footer class="border-t border-[#d8c6ab]/40 bg-[#f8f4eb]">
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 md:flex-row md:items-center md:justify-between lg:px-10"
+    >
+      <div class="text-center md:text-left">
+        <p
+          class="[font-family:'Playfair Display',serif] text-3xl text-[#1f1a17]"
+        >
+          {data.footer.brand}
+        </p>
+        <p
+          class="mt-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6a5a4d]"
+        >
+          {data.footer.copyright}
+        </p>
+      </div>
+      <div
+        class="flex flex-wrap items-center justify-center gap-6 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#6a5a4d] md:justify-end"
+      >
+        {
+          data.footer.links.map((item) => (
+            <a class="transition-colors hover:text-[#ab8445]" href={item.href}>
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </footer>
+</div>
+
+<style>
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .reveal.active {
+    animation: revealFadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  .reveal-left.active {
+    animation: revealSlideRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  .reveal-right.active {
+    animation: revealSlideLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .reveal-scale.active {
+    animation: revealScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Staggered animation delays */
+  .reveal.delay-1,
+  .reveal-left.delay-1,
+  .reveal-right.delay-1,
+  .reveal-scale.delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .reveal.delay-2,
+  .reveal-left.delay-2,
+  .reveal-right.delay-2,
+  .reveal-scale.delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .reveal.delay-3,
+  .reveal-left.delay-3,
+  .reveal-right.delay-3,
+  .reveal-scale.delay-3 {
+    animation-delay: 0.3s;
+  }
+
+  .reveal.delay-4,
+  .reveal-left.delay-4,
+  .reveal-right.delay-4,
+  .reveal-scale.delay-4 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes revealFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes revealSlideRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes revealSlideLeft {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes revealScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .reveal,
+    .reveal-left,
+    .reveal-right,
+    .reveal-scale {
+      animation-duration: 0.6s !important;
+    }
+  }
+
+  .hero-parallax {
+    will-change: transform;
+    transform: translateY(0);
+    transition: transform 120ms linear;
+  }
+
+  .media-frame {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(199, 172, 126, 0.5),
+      rgba(246, 241, 232, 0.94)
+    );
+  }
+
+  .media-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+
+<script>
+  // ========================================
+  // Intersection Observer for Scroll Reveals
+  // ========================================
+  const revealConfig = {
+    threshold: 0.15,
+    rootMargin: "0px 0px -60px 0px",
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
+    });
+  }, revealConfig);
+
+  // Observe all reveal elements
+  const revealElements = document.querySelectorAll(
+    ".reveal, .reveal-left, .reveal-right, .reveal-scale",
+  );
+  revealElements.forEach((element) => observer.observe(element));
+
+  // ========================================
+  // Parallax Effect on Hero
+  // ========================================
+  const hero = document.querySelector<HTMLElement>(".hero-parallax");
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (hero) {
+        hero.style.transform = `translateY(${window.scrollY * 0.18}px)`;
+      }
+    },
+    { passive: true },
+  );
+
+  // ========================================
+  // Mobile Menu Toggle
+  // ========================================
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+  if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener("click", () => {
+      const isHidden = mobileMenu.classList.toggle("hidden");
+      menuBtn.setAttribute("aria-expanded", String(!isHidden));
+    });
+  }
+
+  // ========================================
+  // Smooth Scroll for Anchor Links
+  // ========================================
+  const anchorLinks = document.querySelectorAll('a[href^="#"]');
+  anchorLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const target = link.getAttribute("href");
+      if (!target || target === "#") {
+        return;
+      }
+
+      const targetElement = document.querySelector(target);
+      if (!(targetElement instanceof HTMLElement)) {
+        return;
+      }
+
+      event.preventDefault();
+      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.add("hidden");
+        menuBtn?.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+
+  // ========================================
+  // RSVP Form Submission
+  // ========================================
+  const rsvpForm = document.getElementById("rsvp-form");
+  if (rsvpForm) {
+    rsvpForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const submitButton = rsvpForm.querySelector('button[type="submit"]');
+      if (!(submitButton instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      const originalText = submitButton.textContent ?? "";
+      submitButton.textContent = "Sending...";
+      submitButton.disabled = true;
+
+      window.setTimeout(() => {
+        submitButton.textContent = "Thank you";
+
+        window.setTimeout(() => {
+          submitButton.textContent = originalText;
+          submitButton.disabled = false;
+        }, 2200);
+      }, 1200);
+    });
+  }
+</script>

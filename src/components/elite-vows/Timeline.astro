@@ -1,0 +1,67 @@
+---
+interface TimelineEvent {
+  time: string;
+  title: string;
+  venue: string;
+  icon: string;
+  imageLabel: string;
+  image: string;
+}
+
+interface Props {
+  events: TimelineEvent[];
+}
+
+const { events } = Astro.props as Props;
+---
+
+<div class="relative mx-auto max-w-5xl px-6">
+  <div
+    class="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[#ccb48b]/30 md:block"
+  >
+  </div>
+  {
+    events.map((event, index) => {
+      const isEven = index % 2 === 0;
+
+      return (
+        <article class={`reveal-left delay-${(index % 4) + 1} relative mb-20 md:mb-24 ${isEven ? "" : "md:mt-6"}`}>
+          <div
+            class={`grid items-center gap-8 md:grid-cols-[1fr_120px_1fr] ${isEven ? "" : "md:[direction:rtl]"}`}
+          >
+            <div
+              class={`space-y-3 text-center md:text-start ${isEven ? "md:text-end" : "md:text-start"}`}
+            >
+              <p class="text-[10px] font-semibold uppercase tracking-[0.4em] text-[#ab8445]">
+                {event.time}
+              </p>
+              <h3 class="[font-family:'Playfair Display',serif] text-2xl text-[#1f1a17] md:text-3xl">
+                {event.title}
+              </h3>
+              <p class="text-sm leading-6 text-[#66584d]">{event.venue}</p>
+            </div>
+
+            <div class="relative mx-auto hidden h-14 w-14 items-center justify-center rounded-full border border-[#ab8445]/70 bg-[#f6f1e8] text-[#ab8445] shadow-[0_14px_30px_rgba(31,26,20,0.08)] md:flex">
+              <span class="material-symbols-outlined text-[22px]">
+                {event.icon}
+              </span>
+            </div>
+
+            <div class="overflow-hidden rounded-4xl border border-[#d7c8b1] bg-[#efe6d7] shadow-[0_24px_60px_rgba(44,31,18,0.08)]">
+              <div class="media-frame relative aspect-4/3">
+                <img alt={event.title} class="absolute inset-0 h-full w-full object-cover grayscale" src={event.image} />
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.25))]" />
+                <div class="absolute inset-0 border border-white/35" />
+                <div class="absolute inset-0 flex items-end p-6 text-center">
+                  <div class="max-w-xs rounded-3xl border border-white/20 bg-black/25 px-5 py-4 text-xs uppercase tracking-[0.35em] text-white/90 backdrop-blur-sm">
+                    {event.imageLabel}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      );
+    })
+  }
+</div>

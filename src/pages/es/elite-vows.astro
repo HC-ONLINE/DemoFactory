@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EliteVowsApp from '../../components/elite-vows/App.astro';
+import * as page from '../../content/demos/elite-vows/es.md';
+
+const data = page.frontmatter;
+const Content = page.Content;
+---
+
+<Layout
+	title={data.title}
+	description={data.description}
+	lang="es"
+	bodyClass="min-h-full bg-[#f6f1e8] text-[#1f1a17] antialiased [font-family:'Montserrat',sans-serif]"
+>
+	<link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+	<link slot="head" rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link slot="head" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+	<EliteVowsApp data={data}>
+		<Content />
+	</EliteVowsApp>
+</Layout>
