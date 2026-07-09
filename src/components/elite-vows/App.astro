@@ -79,6 +79,25 @@ const mobileLinks = [
   ...data.navigation,
   { label: data.rsvp.submitLabel, href: "#rsvp" },
 ];
+
+const withBase = (path: string) => {
+  if (
+    !path ||
+    path.startsWith("#") ||
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("tel:")
+  ) {
+    return path;
+  }
+
+  const base = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
+};
 ---
 
 <div
@@ -154,7 +173,7 @@ const mobileLinks = [
         class="absolute inset-0 hidden h-full w-full object-cover grayscale md:block"
         decoding="async"
         loading="eager"
-        src={data.hero.image}
+        src={withBase(data.hero.image)}
       />
       <div
         class="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.12),rgba(18,14,10,0.45))]"
@@ -205,7 +224,7 @@ const mobileLinks = [
           <img
             alt={data.story.title}
             class="absolute inset-0 h-full w-full object-cover grayscale"
-            src={data.story.image}
+            src={withBase(data.story.image)}
           />
           <div
             class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.28))]"
@@ -334,7 +353,7 @@ const mobileLinks = [
           <img
             alt={data.venue.mapLabel}
             class="absolute inset-0 h-full w-full object-cover grayscale"
-            src="/elite-vows/maps.jpg"
+            src={withBase("/elite-vows/maps.jpg")}
           />
           <div
             class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.28))]"
