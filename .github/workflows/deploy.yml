@@ -56,15 +56,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  verify-links:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for deployment to be ready
-        run: sleep 30
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.12.0"
