@@ -1,5 +1,5 @@
 ---
-import "../styles/global.css";
+import "@/styles/global.css";
 
 interface Props {
   title?: string;
@@ -9,20 +9,29 @@ interface Props {
 }
 
 const {
-  title = 'Astro Basics',
-  description = '',
-  lang = 'en',
-  bodyClass = 'min-h-full bg-slate-950 text-slate-100 font-sans antialiased',
+  title = "Astro Basics",
+  description = "",
+  lang = "en",
+  bodyClass = "min-h-full bg-slate-950 text-slate-100 font-sans antialiased",
 } = Astro.props as Props;
 
 const withBase = (path: string) => {
-  if (!path || path.startsWith('#') || path.startsWith('http://') || path.startsWith('https://') || path.startsWith('mailto:') || path.startsWith('tel:')) {
+  if (
+    !path ||
+    path.startsWith("#") ||
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("tel:")
+  ) {
     return path;
   }
 
-  const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${base}${normalizedPath}`.replace(/\/+/g, '/');
+  const base = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
 };
 ---
 
@@ -31,8 +40,8 @@ const withBase = (path: string) => {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-    <link rel="icon" href={withBase('/favicon.ico')} />
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+    <link rel="icon" href={withBase("/favicon.ico")} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     {description ? <meta name="description" content={description} /> : null}
