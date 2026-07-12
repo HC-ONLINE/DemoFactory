@@ -1,0 +1,626 @@
+---
+interface DemoLink {
+  label: string;
+  href: string;
+}
+
+interface DemoData {
+  title: string;
+  description: string;
+  navigation: DemoLink[];
+  hero: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+    image: string;
+    stat: string;
+  };
+  gallery: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    manifesto: string;
+    signature: string;
+    items: Array<{
+      title: string;
+      caption: string;
+      image: string;
+      className: string;
+    }>;
+  };
+  philosophy: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    image: string;
+    highlights: string[];
+  };
+  services: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    cards: Array<{
+      title: string;
+      description: string;
+      image: string;
+      badge: string;
+    }>;
+  };
+  process: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    steps: Array<{
+      title: string;
+      description: string;
+    }>;
+  };
+  contact: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    email: string;
+    location: string;
+    socials: DemoLink[];
+    infoTitle: string;
+    socialsTitle: string;
+    form: {
+      nameLabel: string;
+      namePlaceholder: string;
+      emailLabel: string;
+      emailPlaceholder: string;
+      messageLabel: string;
+      messagePlaceholder: string;
+      submitText: string;
+    };
+  };
+  footer: {
+    brand: string;
+    copyright: string;
+    links: DemoLink[];
+  };
+}
+
+const { data } = Astro.props as { data: DemoData };
+
+const withBase = (path: string) => {
+  if (
+    !path ||
+    path.startsWith("#") ||
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("tel:")
+  ) {
+    return path;
+  }
+
+  const base = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
+};
+---
+
+<div class="min-h-screen bg-[#121414] text-[#e2e2e2]" id="lumina-root">
+  <header
+    class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#121414]/70 backdrop-blur-xl"
+  >
+    <div
+      class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10"
+    >
+      <a
+        class="text-lg font-semibold uppercase tracking-[0.35em] text-[#e2e2e2]"
+        href="#lumina-root"
+      >
+        {data.footer.brand}
+      </a>
+      <nav class="hidden items-center gap-7 md:flex">
+        {
+          data.navigation.map((item) => (
+            <a
+              class="text-sm text-[#cfc4c5] transition-colors hover:text-[#abd600]"
+              href={item.href}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="relative isolate min-h-screen overflow-hidden" id="home">
+      <div class="absolute inset-0">
+        <img
+          alt={data.hero.title}
+          class="h-full w-full object-cover"
+          decoding="async"
+          loading="eager"
+          src={withBase(data.hero.image)}
+        />
+        <div
+          class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.65))]"
+        >
+        </div>
+        <div
+          class="absolute inset-0 bg-[radial-gradient(ellipse_at_center_top,rgba(255,255,255,0.15),transparent_40%)]"
+        >
+        </div>
+      </div>
+
+      <div
+        class="relative flex min-h-screen flex-col items-center justify-center px-6 py-28 sm:px-8 lg:px-10"
+      >
+        <div class="text-center animate-fade-in-up">
+          <h1
+            class="font-['Playfair_Display',serif] text-5xl font-bold leading-tight text-white sm:text-6xl lg:text-7xl"
+          >
+            {data.hero.title}
+          </h1>
+          <p
+            class="mt-6 max-w-2xl mx-auto text-base leading-8 text-[#cfc4c5] sm:text-lg"
+          >
+            {data.hero.description}
+          </p>
+          <div class="mt-12">
+            <a
+              class="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.35em] text-[#e2e2e2] transition-colors hover:text-[#abd600]"
+              href={data.hero.ctaHref}
+            >
+              <span>{data.hero.ctaLabel}</span>
+              <span class="material-symbols-outlined text-[16px]"
+                >arrow_downward</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10" id="gallery">
+      <div class="grid grid-cols-1 gap-16 lg:grid-cols-[0.85fr_1.15fr]">
+        <div class="flex flex-col justify-start reveal">
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#abd600]"
+          >
+            {data.gallery.eyebrow}
+          </p>
+          <h2 class="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+            {data.gallery.title}
+          </h2>
+          <p class="mt-6 text-lg leading-8 text-[#cfc4c5]">
+            {data.gallery.intro}
+          </p>
+        </div>
+
+        <blockquote
+          class="flex items-center lg:col-start-2 lg:row-start-1 reveal"
+        >
+          <p
+            class="font-['Playfair_Display',serif] text-2xl sm:text-3xl italic leading-relaxed text-[#e2e2e2]"
+          >
+            {data.gallery.manifesto}
+            <span
+              class="block mt-4 text-sm font-mono not-italic tracking-widest text-[#abd600]"
+              >{data.gallery.signature}</span
+            >
+          </p>
+        </blockquote>
+      </div>
+
+      <div class="mt-16">
+        <div
+          class="grid grid-cols-1 gap-4 sm:grid-cols-4 sm:auto-rows-35 md:auto-rows-40 lg:auto-rows-35"
+        >
+          {
+            data.gallery.items.map((item, index) => (
+              <article
+                class={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#1e2020] ${item.className} reveal`}
+              >
+                <img
+                  alt={item.title}
+                  class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  src={withBase(item.image)}
+                />
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.24)_45%,rgba(0,0,0,0.62)_100%)]" />
+                <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 overlay-text">
+                  <p class="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#abd600]">
+                    {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                  </p>
+                  <h3 class="mt-1 text-sm font-semibold text-white sm:text-base">
+                    {item.title}
+                  </h3>
+                  <p class="mt-1 max-w-sm text-xs leading-5 text-[#e2e2e2]/90 sm:text-sm sm:leading-6">
+                    {item.caption}
+                  </p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="border-y border-white/10 bg-[linear-gradient(180deg,rgba(30,32,32,0.9),rgba(18,20,20,0.95))] py-24"
+      id="philosophy"
+    >
+      <div
+        class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:px-10"
+      >
+        <div class="group reveal">
+          <img
+            alt={data.philosophy.title}
+            class="h-full min-h-90 w-full rounded-4xl border border-white/10 object-cover"
+            src={withBase(data.philosophy.image)}
+          />
+        </div>
+        <div class="reveal">
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#abd600]"
+          >
+            {data.philosophy.eyebrow}
+          </p>
+          <h2 class="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+            {data.philosophy.title}
+          </h2>
+          <p class="mt-6 text-lg leading-8 text-[#cfc4c5]">
+            {data.philosophy.description}
+          </p>
+          <div
+            class="prose prose-invert mt-8 max-w-none text-lg leading-8 text-[#cfc4c5]"
+          >
+            <slot />
+          </div>
+          <div class="mt-8 flex flex-wrap gap-3">
+            {
+              data.philosophy.highlights.map((item) => (
+                <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-[#e2e2e2]">
+                  {item}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10"
+      id="services"
+    >
+      <div class="mb-12 max-w-3xl reveal">
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#abd600]"
+        >
+          {data.services.eyebrow}
+        </p>
+        <h2 class="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+          {data.services.title}
+        </h2>
+        <p class="mt-4 text-lg leading-8 text-[#cfc4c5]">
+          {data.services.intro}
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        {
+          data.services.cards.map((card) => (
+            <article class="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#1e2020] reveal">
+              <div class="aspect-2/3 overflow-hidden">
+                <img
+                  alt={card.title}
+                  class="h-full w-full object-cover"
+                  src={withBase(card.image)}
+                />
+              </div>
+              <div class="p-7">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#abd600]">
+                  {card.badge}
+                </p>
+                <h3 class="mt-3 text-2xl font-semibold text-white">
+                  {card.title}
+                </h3>
+                <p class="mt-3 text-base leading-7 text-[#cfc4c5]">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="border-t border-white/10 bg-[#171919] py-24" id="process">
+      <div
+        class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10"
+      >
+        <div class="reveal">
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#abd600]"
+          >
+            {data.process.eyebrow}
+          </p>
+          <h2 class="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+            {data.process.title}
+          </h2>
+          <p class="mt-6 text-lg leading-8 text-[#cfc4c5]">
+            {data.process.intro}
+          </p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          {
+            data.process.steps.map((step, index) => (
+              <div class="rounded-[1.4rem] border border-white/10 bg-[#1e2020] p-6 reveal">
+                <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[#abd600]">
+                  0{index + 1}
+                </p>
+                <h3 class="mt-4 text-xl font-semibold text-white">
+                  {step.title}
+                </h3>
+                <p class="mt-3 text-sm leading-7 text-[#cfc4c5]">
+                  {step.description}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10" id="contact">
+      <div class="mb-16 flex flex-col items-center text-center reveal">
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#abd600]"
+        >
+          {data.contact.eyebrow}
+        </p>
+        <h1
+          class="mt-4 font-serif text-4xl font-medium text-white sm:text-5xl lg:text-6xl"
+        >
+          {data.contact.title}
+        </h1>
+      </div>
+
+      <div class="grid gap-16 lg:grid-cols-2 lg:gap-24 reveal">
+        <div class="flex flex-col justify-center">
+          <h2 class="font-serif text-3xl font-medium text-white sm:text-4xl">
+            {data.contact.infoTitle}
+          </h2>
+          <p class="mt-5 max-w-md text-lg leading-relaxed text-[#cfc4c5]">
+            {data.contact.intro}
+          </p>
+
+          <ul class="mt-10 space-y-6">
+            <li class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#abd600]/10"
+              >
+                <svg
+                  class="h-6 w-6 text-[#abd600]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <a
+                class="text-lg text-white transition-colors hover:text-[#abd600]"
+                href={`mailto:${data.contact.email}`}
+              >
+                {data.contact.email}
+              </a>
+            </li>
+
+            <li class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#abd600]/10"
+              >
+                <svg
+                  class="h-6 w-6 text-[#abd600]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </div>
+              <p class="text-lg text-white">{data.contact.location}</p>
+            </li>
+          </ul>
+          <div class="mt-12">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.28em] text-[#cfc4c5]"
+            >
+              {data.contact.socialsTitle}
+            </p>
+            <div class="mt-4 flex flex-wrap gap-6">
+              {
+                data.contact.socials.map((social) => (
+                  <a
+                    class="text-base text-[#e2e2e2] transition-colors hover:text-[#abd600]"
+                    href={social.href}
+                  >
+                    {social.label}
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+        <div
+          class="rounded-[1.4rem] border border-white/10 bg-[#121414]/70 p-8 sm:p-10 lg:p-12 shadow-xl"
+        >
+          <form class="flex flex-col gap-8">
+            <div class="flex flex-col gap-2">
+              <label
+                for="name"
+                class="text-xs font-semibold uppercase tracking-[0.2em] text-[#cfc4c5]"
+              >
+                {data.contact.form.nameLabel}
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder={data.contact.form.namePlaceholder}
+                class="w-full border-b border-white/20 bg-transparent py-3 text-white placeholder:text-gray-500 focus:border-[#abd600] focus:outline-none focus:ring-0"
+                required
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label
+                for="email"
+                class="text-xs font-semibold uppercase tracking-[0.2em] text-[#cfc4c5]"
+              >
+                {data.contact.form.emailLabel}
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder={data.contact.form.emailPlaceholder}
+                class="w-full border-b border-white/20 bg-transparent py-3 text-white placeholder:text-gray-500 focus:border-[#abd600] focus:outline-none focus:ring-0"
+                required
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label
+                for="message"
+                class="text-xs font-semibold uppercase tracking-[0.2em] text-[#cfc4c5]"
+              >
+                {data.contact.form.messageLabel}
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="4"
+                placeholder={data.contact.form.messagePlaceholder}
+                class="w-full resize-none border-b border-white/20 bg-transparent py-3 text-white placeholder:text-gray-500 focus:border-[#abd600] focus:outline-none focus:ring-0"
+                required></textarea>
+            </div>
+            <div class="mt-4 text-center">
+              <button
+                type="submit"
+                class="inline-block w-full rounded-sm bg-[#e2e2e2] px-8 py-4 text-sm font-bold uppercase tracking-widest text-[#121414] transition-colors duration-300 hover:bg-[#abd600] hover:text-[#121414] sm:w-auto"
+              >
+                {data.contact.form.submitText}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-[#121414] py-10">
+    <div
+      class="mx-auto flex max-w-7xl flex-col gap-6 px-6 text-sm text-[#cfc4c5] sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10"
+    >
+      <p>{data.footer.copyright}</p>
+      <div class="flex flex-wrap gap-4">
+        {
+          data.footer.links.map((link) => (
+            <a class="transition-colors hover:text-[#abd600]" href={link.href}>
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </footer>
+</div>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 700ms cubic-bezier(0.2, 0.9, 0.2, 1),
+      transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+    will-change: transform, opacity;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Imagenes en escala de grises por defecto, recuperan color al hover */
+  .group img {
+    filter: grayscale(100%) contrast(0.95);
+    transform: scale(1);
+    transition:
+      transform 800ms cubic-bezier(0.2, 0.9, 0.2, 1),
+      filter 350ms ease;
+    will-change: transform, filter;
+  }
+
+  .group:hover img,
+  .group:focus-within img {
+    filter: none;
+    transform: scale(1.05);
+  }
+
+  /* Texto overlay oculto por defecto y mostrado al hover */
+  .overlay-text {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 400ms ease,
+      transform 300ms ease;
+    pointer-events: none;
+  }
+
+  .group:hover .overlay-text,
+  .group:focus-within .overlay-text {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+</style>
+
+<script>
+  const reveals = Array.from(document.querySelectorAll(".reveal"));
+
+  if (reveals.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("reveal-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+
+    reveals.forEach((element) => observer.observe(element));
+  }
+</script>
