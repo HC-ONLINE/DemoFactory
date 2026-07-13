@@ -1,5 +1,6 @@
 ---
 import "@/styles/global.css";
+import HomeButton from "@/components/HomeButton.astro";
 
 interface Props {
   title?: string;
@@ -49,5 +50,6 @@ const withBase = (path: string) => {
   </head>
   <body class={bodyClass}>
     <slot />
+    <HomeButton />
   </body>
 </html>
