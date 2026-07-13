@@ -130,15 +130,13 @@ const footerLinks = data.footer?.links ?? [];
                   href={withBase(demo.url)}
                   class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300 dark:bg-neutral-900 dark:ring-neutral-800 dark:group-hover:ring-neutral-700"
                 >
-                  <div class="aspect-16/10 overflow-hidden">
-                    <img
-                      src={withBase(demo.image)}
-                      alt={demo.name}
-                      class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
+                  <img
+                    src={withBase(demo.image)}
+                    alt={demo.name}
+                    class="w-full transition duration-500 group-hover:scale-[1.02]"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </a>
 
                 <div class="mt-5 flex flex-1 flex-col">
