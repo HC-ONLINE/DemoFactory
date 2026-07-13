@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 import type { IndexData } from "@/types/index-page";
 
 interface Props {
@@ -36,7 +37,7 @@ const footerLinks = data.footer?.links ?? [];
   title={data.title}
   description={data.description}
   lang={lang}
-  bodyClass="min-h-full bg-white text-neutral-900 font-sans antialiased"
+  bodyClass="min-h-full font-sans antialiased"
 >
   <Fragment slot="head">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,14 +49,25 @@ const footerLinks = data.footer?.links ?? [];
   </Fragment>
 
   <div
-    class="flex min-h-full flex-col"
+    id="index-root"
+    class="flex min-h-full flex-col bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100"
     style="font-family: 'Inter', system-ui, sans-serif;"
   >
-    <header class="border-b border-neutral-100">
+    <script is:inline>
+      (function () {
+        if (localStorage.getItem("demofactory-index-theme") === "dark") {
+          document.getElementById("index-root")?.classList.add("dark");
+        }
+      })();
+    </script>
+    <header class="border-b border-neutral-100 dark:border-neutral-800">
       <div
         class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-5 lg:px-8"
       >
-        <a href="#" class="text-lg font-bold tracking-tight text-neutral-900">
+        <a
+          href="#"
+          class="text-lg font-bold tracking-tight text-neutral-900 dark:text-neutral-100"
+        >
           {data.brand}
         </a>
 
@@ -71,8 +83,8 @@ const footerLinks = data.footer?.links ?? [];
                   class:list={[
                     "text-sm font-medium transition-colors",
                     item.active
-                      ? "border-b-2 border-neutral-900 pb-0.5 text-neutral-900"
-                      : "text-neutral-500 hover:text-neutral-900",
+                      ? "border-b-2 border-neutral-900 pb-0.5 text-neutral-900 dark:border-neutral-100 dark:text-neutral-100"
+                      : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100",
                   ]}
                 >
                   {item.label}
@@ -82,12 +94,15 @@ const footerLinks = data.footer?.links ?? [];
           )
         }
 
-        <a
-          href={withBase(data.languageSwitch.url)}
-          class="rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-700"
-        >
-          {data.languageSwitch.label}
-        </a>
+        <div class="flex items-center gap-3">
+          <ThemeToggle lang={lang} />
+          <a
+            href={withBase(data.languageSwitch.url)}
+            class="rounded-full bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+          >
+            {data.languageSwitch.label}
+          </a>
+        </div>
       </div>
     </header>
 
@@ -95,11 +110,11 @@ const footerLinks = data.footer?.links ?? [];
       <section class="mx-auto max-w-6xl px-6 py-16 lg:px-8 lg:py-20">
         <div class="max-w-3xl">
           <h1
-            class="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl"
+            class="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl dark:text-neutral-50"
           >
             {data.heading}
           </h1>
-          <p class="mt-4 text-lg leading-relaxed text-neutral-500">
+          <p class="mt-4 text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
             {data.subheading}
           </p>
         </div>
@@ -113,7 +128,7 @@ const footerLinks = data.footer?.links ?? [];
               <article class="group flex flex-col">
                 <a
                   href={withBase(demo.url)}
-                  class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300"
+                  class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300 dark:bg-neutral-900 dark:ring-neutral-800 dark:group-hover:ring-neutral-700"
                 >
                   <div class="aspect-16/10 overflow-hidden">
                     <img
@@ -127,20 +142,20 @@ const footerLinks = data.footer?.links ?? [];
                 </a>
 
                 <div class="mt-5 flex flex-1 flex-col">
-                  <h2 class="text-xl font-bold text-neutral-900">
+                  <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
                     <a
                       href={withBase(demo.url)}
-                      class="transition hover:text-neutral-600"
+                      class="transition hover:text-neutral-600 dark:hover:text-neutral-300"
                     >
                       {demo.name}
                     </a>
                   </h2>
-                  <p class="mt-2 flex-1 text-sm leading-relaxed text-neutral-500">
+                  <p class="mt-2 flex-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
                     {demo.description}
                   </p>
                   <a
                     href={withBase(demo.url)}
-                    class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 transition hover:gap-2.5"
+                    class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 transition hover:gap-2.5 dark:text-neutral-100 dark:hover:text-neutral-300"
                   >
                     {data.viewProjectLabel}
                     <span aria-hidden="true">→</span>
@@ -155,9 +170,9 @@ const footerLinks = data.footer?.links ?? [];
 
     {
       data.footer && (
-        <footer class="mt-auto border-t border-neutral-100 bg-neutral-50">
-          <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-neutral-500 sm:flex-row lg:px-8">
-            <span class="font-semibold text-neutral-900">{data.brand}</span>
+        <footer class="mt-auto border-t border-neutral-100 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
+          <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-neutral-500 sm:flex-row lg:px-8 dark:text-neutral-400">
+            <span class="font-semibold text-neutral-900 dark:text-neutral-100">{data.brand}</span>
 
             {footerLinks.length > 0 && (
               <nav
@@ -171,7 +186,7 @@ const footerLinks = data.footer?.links ?? [];
                         ? link.href
                         : withBase(link.href)
                     }
-                    class="transition hover:text-neutral-900"
+                    class="transition hover:text-neutral-900 dark:hover:text-neutral-100"
                   >
                     {link.label}
                   </a>
