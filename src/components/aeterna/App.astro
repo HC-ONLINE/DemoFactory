@@ -1,0 +1,661 @@
+---
+import styles from "@/components/aeterna/style.css";
+
+interface DemoLink {
+  label: string;
+  href: string;
+}
+
+interface DemoEvent {
+  time: string;
+  title: string;
+  venue: string;
+  icon: string;
+  imageLabel: string;
+  image: string;
+}
+
+interface DetailItem {
+  /** Icono, símbolo, letra o número identificador (ej: '𓂀', 'SPQR', '[AI]') */
+  iconOrLabel: string;
+  /** Breve descripción del hito o elemento histórico */
+  description: string;
+}
+
+interface EpochSection {
+  /** Rango temporal de la época (ej: '3000 a.C. – 30 a.C.') */
+  eraTag: string;
+  /** Título principal de la sección (soporta saltos de línea con <br /> si es necesario) */
+  title: string;
+  /** Descripción o resumen histórico de la era */
+  description: string;
+  /** Nombre de la imagen de fondo alojada en public (ej: '/aeterna/romana.png') */
+  image: string;
+  /** Listado de 3 hitos o detalles clave de la civilización */
+  details: DetailItem[];
+  /** Elemento o etiqueta decorativa del lado derecho (ej: 'ANKH', 'SYS') */
+  decoLabel?: string;
+}
+
+interface DemoData {
+  /** Configuración de la pantalla de bienvenida/introducción */
+  intro: {
+    title: string;
+    subtitle: string;
+    startYear: string;
+    endYear: string;
+  };
+  /** Secciones cronológicas mapeadas dinámicamente */
+    epochs: {
+    prehistory: EpochSection;
+    egypt: EpochSection;
+    greece: EpochSection;
+    rome: EpochSection;
+    medieval: EpochSection;
+    renaissance: EpochSection;
+    discovery: EpochSection;
+    enlightenment: EpochSection;
+    industrial: EpochSection;
+    modern: EpochSection;
+    cyberpunk: EpochSection;
+  };
+}
+
+const { data } = Astro.props as { data: DemoData };
+
+const withBase = (path: string) => {
+  if (
+    !path ||
+    path.startsWith("#") ||
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("tel:")
+  ) {
+    return path;
+  }
+
+  const base = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
+};
+---
+
+<div
+  class="site-header"
+  id="site-header"
+  aria-label="Encabezado del sitio"
+  style={styles}
+>
+  <h1>Aeterna</h1>
+</div>
+<!-- Nav indicator -->
+<nav id="epoch-nav" aria-label="Navegación por épocas">
+    <div class="nav-dots">
+    <button class="nav-dot active" data-epoch="0" aria-label="Introducción"></button>
+    <button class="nav-dot" data-epoch="1" aria-label="Prehistoria"></button>
+    <button class="nav-dot" data-epoch="2" aria-label="Egipcia"></button>
+    <button class="nav-dot" data-epoch="3" aria-label="Grecia"></button>
+    <button class="nav-dot" data-epoch="4" aria-label="Romana"></button>
+    <button class="nav-dot" data-epoch="5" aria-label="Medieval"></button>
+    <button class="nav-dot" data-epoch="6" aria-label="Renacimiento"></button>
+    <button class="nav-dot" data-epoch="7" aria-label="Descubrimientos"></button>
+    <button class="nav-dot" data-epoch="8" aria-label="Ilustración"></button>
+    <button class="nav-dot" data-epoch="9" aria-label="Industrial"></button>
+    <button class="nav-dot" data-epoch="10" aria-label="Moderna"></button>
+    <button class="nav-dot" data-epoch="11" aria-label="Cyberpunk"></button>
+  </div>
+  <span id="epoch-label" class="nav-label" aria-live="polite">Inicio</span>
+</nav>
+
+<!-- Scroll hint -->
+<div id="scroll-hint" class="scroll-hint" aria-hidden="true">
+  <span class="scroll-text">SCROLL</span>
+  <div class="scroll-arrow"></div>
+</div>
+
+<!-- ═══════════ INTRO ═══════════ -->
+<section class="epoch epoch-intro" data-epoch="0" id="intro">
+  <div class="epoch-bg intro-bg"></div>
+  <div class="intro-content">
+    <h1 class="intro-title" set:html={data.intro.title} />
+    <p class="intro-subtitle">
+      {data.intro.subtitle}
+    </p>
+    <div class="intro-divider"></div>
+    <div class="intro-years">
+      <span>{data.intro.startYear}</span>
+      <div class="years-line"></div>
+      <span>{data.intro.endYear}</span>
+    </div>
+  </div>
+  <div class="intro-particles" aria-hidden="true">
+    {
+      Array.from({ length: 30 }).map((_, i) => (
+        <div
+          class="particle"
+          style={`--delay: ${Math.random() * 5}s; --x: ${Math.random() * 100}%; --dur: ${3 + Math.random() * 4}s;`}
+        />
+      ))
+    }
+  </div>
+</section>
+
+<!-- ═══════════ PREHISTORIA ═══════════ -->
+<section class="epoch epoch-prehistory" data-epoch="1" id="prehistoria">
+  <div
+    class="epoch-bg prehistory-bg"
+    style={`background-image: url('${withBase(data.epochs.prehistory.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay prehistory-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag prehistory-tag">{data.epochs.prehistory.eraTag}</div>
+      <h2 class="epoch-title prehistory-font" set:html={data.epochs.prehistory.title} />
+      <div class="prehistory-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.prehistory.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.prehistory.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right prehistory-deco" aria-hidden="true">
+      <div class="generic-border-deco">
+        <div class="generic-inner-deco">
+          <div class="generic-glyph prehistory-text-color">{data.epochs.prehistory.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ EGIPCIA ═══════════ -->
+<section class="epoch epoch-egypt" data-epoch="2" id="egipcia">
+  <div
+    class="epoch-bg egypt-bg"
+    style={`background-image: url('${withBase(data.epochs.egypt.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay egypt-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag egypt-tag">{data.epochs.egypt.eraTag}</div>
+      <h2 class="epoch-title egypt-font" set:html={data.epochs.egypt.title} />
+      <div class="egypt-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.egypt.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.egypt.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right egypt-deco" aria-hidden="true">
+      <div class="egypt-border-deco">
+        <div class="egypt-inner-deco">
+          <div class="egypt-glyph">𓋹</div>
+          <div class="egypt-glyph-sub">{data.epochs.egypt.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GRECIA ═══════════ -->
+<section class="epoch epoch-greece" data-epoch="3" id="grecia">
+  <div
+    class="epoch-bg greece-bg"
+    style={`background-image: url('${withBase(data.epochs.greece.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay greece-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag greece-tag">{data.epochs.greece.eraTag}</div>
+      <h2 class="epoch-title greece-font" set:html={data.epochs.greece.title} />
+      <div class="greece-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.greece.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.greece.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right greece-deco" aria-hidden="true">
+      <div class="generic-border-deco">
+        <div class="generic-inner-deco">
+          <div class="generic-glyph greece-text-color">{data.epochs.greece.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ROMANA ═══════════ -->
+<section class="epoch epoch-rome" data-epoch="4" id="romana">
+  <div
+    class="epoch-bg rome-bg"
+    style={`background-image: url('${withBase(data.epochs.rome.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay rome-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag rome-tag">{data.epochs.rome.eraTag}</div>
+      <h2 class="epoch-title rome-font" set:html={data.epochs.rome.title} />
+      <div class="rome-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.rome.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.rome.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-label">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right rome-arch-deco" aria-hidden="true">
+      <div class="rome-arch">
+        <div class="rome-arch-text">{data.epochs.rome.decoLabel}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MEDIEVAL ═══════════ -->
+<section class="epoch epoch-medieval" data-epoch="5" id="medieval">
+  <div
+    class="epoch-bg medieval-bg"
+    style={`background-image: url('${withBase(data.epochs.medieval.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay medieval-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag medieval-tag">{data.epochs.medieval.eraTag}</div>
+      <h2 class="epoch-title medieval-font" set:html={data.epochs.medieval.title} />
+      <div class="medieval-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.medieval.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.medieval.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right medieval-deco" aria-hidden="true">
+      <div class="generic-border-deco">
+        <div class="generic-inner-deco">
+          <div class="generic-glyph medieval-text-color">{data.epochs.medieval.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RENACIMIENTO ═══════════ -->
+<section class="epoch epoch-renaissance" data-epoch="6" id="renacimiento">
+  <div
+    class="epoch-bg renaissance-bg"
+    style={`background-image: url('${withBase(data.epochs.renaissance.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay renaissance-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag renaissance-tag">
+        {data.epochs.renaissance.eraTag}
+      </div>
+      <h2
+        class="epoch-title renaissance-font"
+        set:html={data.epochs.renaissance.title}
+      />
+      <div class="renaissance-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.renaissance.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.renaissance.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-label">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right renaissance-ornament" aria-hidden="true">
+      <div class="renaissance-circle">
+        <div class="renaissance-circle-inner">
+          <div class="renaissance-cross"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DESCUBRIMIENTOS ═══════════ -->
+<section class="epoch epoch-discovery" data-epoch="7" id="descubrimientos">
+  <div
+    class="epoch-bg discovery-bg"
+    style={`background-image: url('${withBase(data.epochs.discovery.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay discovery-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag discovery-tag">{data.epochs.discovery.eraTag}</div>
+      <h2 class="epoch-title discovery-font" set:html={data.epochs.discovery.title} />
+      <div class="discovery-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.discovery.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.discovery.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right discovery-deco" aria-hidden="true">
+      <div class="generic-border-deco">
+        <div class="generic-inner-deco">
+          <div class="generic-glyph discovery-text-color">{data.epochs.discovery.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ILUSTRACION ═══════════ -->
+<section class="epoch epoch-enlightenment" data-epoch="8" id="ilustracion">
+  <div
+    class="epoch-bg enlightenment-bg"
+    style={`background-image: url('${withBase(data.epochs.enlightenment.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay enlightenment-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag enlightenment-tag">{data.epochs.enlightenment.eraTag}</div>
+      <h2 class="epoch-title enlightenment-font" set:html={data.epochs.enlightenment.title} />
+      <div class="enlightenment-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.enlightenment.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.enlightenment.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-icon">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right enlightenment-deco" aria-hidden="true">
+      <div class="generic-border-deco">
+        <div class="generic-inner-deco">
+          <div class="generic-glyph enlightenment-text-color">{data.epochs.enlightenment.decoLabel}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ INDUSTRIAL ═══════════ -->
+<section class="epoch epoch-industrial" data-epoch="9" id="industrial">
+  <div
+    class="epoch-bg industrial-bg"
+    style={`background-image: url('${withBase(data.epochs.industrial.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay industrial-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag industrial-tag">{data.epochs.industrial.eraTag}</div>
+      <h2
+        class="epoch-title industrial-font"
+        set:html={data.epochs.industrial.title}
+      />
+      <div class="industrial-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.industrial.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.industrial.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-label">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right industrial-gear-deco" aria-hidden="true">
+      <div class="industrial-gear-ring">
+        <div class="industrial-gear-inner"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MODERNA ═══════════ -->
+<section class="epoch epoch-modern" data-epoch="10" id="moderna">
+  <div
+    class="epoch-bg modern-bg"
+    style={`background-image: url('${withBase(data.epochs.modern.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay modern-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag modern-tag">{data.epochs.modern.eraTag}</div>
+      <h2 class="epoch-title modern-font" set:html={data.epochs.modern.title} />
+      <div class="modern-hr"></div>
+      <p class="epoch-desc">
+        {data.epochs.modern.description}
+      </p>
+      <div class="epoch-details">
+        {
+          data.epochs.modern.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-label">{detail.iconOrLabel}</span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right modern-grid-deco" aria-hidden="true">
+      <div class="modern-screen">
+        <div class="modern-scan"></div>
+        <div class="modern-text-anim">
+          {
+            data.epochs.modern.details[0]?.iconOrLabel === "01"
+              ? "01001000"
+              : "AETERNA"
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CYBERPUNK ═══════════ -->
+<section class="epoch epoch-cyber" data-epoch="11" id="cyberpunk">
+  <div
+    class="epoch-bg cyber-bg"
+    style={`background-image: url('${withBase(data.epochs.cyberpunk.image)}')`}
+  >
+  </div>
+  <div class="epoch-overlay cyber-overlay"></div>
+  <div class="epoch-content">
+    <div class="epoch-left">
+      <div class="era-tag cyber-tag">{data.epochs.cyberpunk.eraTag}</div>
+      <h2
+        class="epoch-title cyber-font"
+        set:html={data.epochs.cyberpunk.title}
+      />
+      <div class="cyber-hr"></div>
+      <p class="epoch-desc cyber-desc">
+        {data.epochs.cyberpunk.description}
+      </p>
+      <div class="epoch-details cyber-details">
+        {
+          data.epochs.cyberpunk.details.map((detail) => (
+            <div class="detail-item">
+              <span class="detail-label cyber-bracket">
+                {detail.iconOrLabel}
+              </span>
+              <span>{detail.description}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="epoch-right cyber-hud-deco" aria-hidden="true">
+      <div class="cyber-hud">
+        <div class="cyber-hud-ring"></div>
+        <div class="cyber-hud-center">
+          <span class="cyber-hud-text"
+            >{data.epochs.cyberpunk.decoLabel || "SYS"}</span
+          >
+          <span class="cyber-hud-status">ONLINE</span>
+        </div>
+        <div class="cyber-hud-corner tl"></div>
+        <div class="cyber-hud-corner tr"></div>
+        <div class="cyber-hud-corner bl"></div>
+        <div class="cyber-hud-corner br"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SCROLL SCRIPT ═══════════ -->
+<script>
+  const epochs = document.querySelectorAll(".epoch");
+  const navDots = document.querySelectorAll(".nav-dot");
+  const epochLabel = document.getElementById("epoch-label");
+  const siteHeader = document.getElementById("site-header");
+  const scrollHint = document.getElementById("scroll-hint");
+
+    const epochNames = [
+    "Inicio",
+    "Prehistoria",
+    "Egipcia",
+    "Grecia",
+    "Romana",
+    "Medieval",
+    "Renacimiento",
+    "Descubrimiento",
+    "Ilustración",
+    "Industrial",
+    "Moderna",
+    "Cyberpunk",
+  ];
+    const epochClasses = [
+    "intro",
+    "prehistory",
+    "egypt",
+    "greece",
+    "rome",
+    "medieval",
+    "renaissance",
+    "discovery",
+    "enlightenment",
+    "industrial",
+    "modern",
+    "cyber",
+  ];
+
+  const updateHeaderStyle = (index: number) => {
+    if (!siteHeader) return;
+    const epochClass = epochClasses[index] ?? "intro";
+    siteHeader.className = `site-header site-header-${epochClass}`;
+  };
+
+  updateHeaderStyle(0);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const target = entry.target as HTMLElement;
+        if (entry.isIntersecting) {
+          target.classList.add("in-view");
+          const idx = Number(target.dataset.epoch) || 0;
+          navDots.forEach((d, i) => d.classList.toggle("active", i === idx));
+          if (epochLabel) epochLabel.textContent = epochNames[idx] ?? "";
+          updateHeaderStyle(idx);
+        } else {
+          target.classList.remove("in-view");
+        }
+      });
+    },
+    { threshold: 0.4 },
+  );
+
+  epochs.forEach((s) => observer.observe(s));
+
+  // Hide scroll hint after first scroll
+  let hinted = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!hinted && window.scrollY > 100) {
+        hinted = true;
+        scrollHint?.classList.add("hidden");
+      }
+    },
+    { passive: true },
+  );
+
+  // Nav dot click → scroll to section
+  navDots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+      const target = document.querySelector(`[data-epoch="${i}"]`);
+      target?.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+</script>

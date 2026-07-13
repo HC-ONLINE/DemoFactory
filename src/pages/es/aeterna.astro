@@ -1,0 +1,31 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AeternaApp from "@/components/aeterna/App.astro";
+import * as page from "@/content/demos/aeterna/es.md";
+
+const {
+  title = "Las Épocas de la Humanidad",
+  description = "Un viaje visual e inmersivo a través de las grandes épocas de la historia humana",
+} = Astro.props;
+const data = page.frontmatter;
+const Content = page.Content;
+---
+
+<Layout title={data.title} description={data.description} lang="es">
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    slot="head"
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin="anonymous"
+  />
+  <link
+    slot="head"
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&family=Special+Elite&family=Rajdhani:wght@400;600;700&family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <AeternaApp data={data}>
+    <Content />
+  </AeternaApp>
+</Layout>
