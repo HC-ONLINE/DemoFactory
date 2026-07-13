@@ -1,18 +1,42 @@
 ---
-const base = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
-const homeUrl = `${base}/`;
-const currentPath = Astro.url.pathname;
-const isHome =
-  currentPath === homeUrl || currentPath === base || currentPath === "/";
+interface Props {
+  lang?: string;
+}
+
+const { lang = "es" } = Astro.props;
+
+const withBase = (path: string) => {
+  const base = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
+};
+
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const relativePath =
+  (Astro.url.pathname.replace(basePath, "") || "/").replace(/\/$/, "") || "/";
+
+const isIndexPage =
+  relativePath === "/" || relativePath === "/es" || relativePath === "/en";
+
+const homeUrl =
+  lang === "en"
+    ? withBase("/en/")
+    : relativePath.startsWith("/es")
+      ? withBase("/es/")
+      : withBase("/");
+
+const homeLabel = lang === "en" ? "Back to home" : "Volver al inicio";
 ---
 
 {
-  !isHome && (
+  !isIndexPage && (
     <a
       href={homeUrl}
       class="fixed bottom-8 right-8 z-9999 flex items-center justify-center w-14 h-14 bg-indigo-600/90 backdrop-blur-md text-white rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.5)] border border-indigo-400/30 hover:bg-indigo-500 hover:scale-110 hover:shadow-[0_4px_25px_rgba(79,70,229,0.7)] transition-all duration-300 group overflow-hidden"
-      aria-label="Volver al inicio"
-      title="Volver al inicio"
+      aria-label={homeLabel}
+      title={homeLabel}
     >
       <span class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
       <svg
