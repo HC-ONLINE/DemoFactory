@@ -1,5 +1,5 @@
 ---
-import styles from "@/components/aeterna/style.css";
+import "@/components/aeterna/style.css";
 
 interface DemoLink {
   label: string;
@@ -46,7 +46,7 @@ interface DemoData {
     endYear: string;
   };
   /** Secciones cronológicas mapeadas dinámicamente */
-    epochs: {
+  epochs: {
     prehistory: EpochSection;
     egypt: EpochSection;
     greece: EpochSection;
@@ -83,25 +83,22 @@ const withBase = (path: string) => {
 };
 ---
 
-<div
-  class="site-header"
-  id="site-header"
-  aria-label="Encabezado del sitio"
-  style={styles}
->
+<div class="site-header" id="site-header" aria-label="Encabezado del sitio">
   <h1>Aeterna</h1>
 </div>
 <!-- Nav indicator -->
 <nav id="epoch-nav" aria-label="Navegación por épocas">
-    <div class="nav-dots">
-    <button class="nav-dot active" data-epoch="0" aria-label="Introducción"></button>
+  <div class="nav-dots">
+    <button class="nav-dot active" data-epoch="0" aria-label="Introducción"
+    ></button>
     <button class="nav-dot" data-epoch="1" aria-label="Prehistoria"></button>
     <button class="nav-dot" data-epoch="2" aria-label="Egipcia"></button>
     <button class="nav-dot" data-epoch="3" aria-label="Grecia"></button>
     <button class="nav-dot" data-epoch="4" aria-label="Romana"></button>
     <button class="nav-dot" data-epoch="5" aria-label="Medieval"></button>
     <button class="nav-dot" data-epoch="6" aria-label="Renacimiento"></button>
-    <button class="nav-dot" data-epoch="7" aria-label="Descubrimientos"></button>
+    <button class="nav-dot" data-epoch="7" aria-label="Descubrimientos"
+    ></button>
     <button class="nav-dot" data-epoch="8" aria-label="Ilustración"></button>
     <button class="nav-dot" data-epoch="9" aria-label="Industrial"></button>
     <button class="nav-dot" data-epoch="10" aria-label="Moderna"></button>
@@ -154,7 +151,10 @@ const withBase = (path: string) => {
   <div class="epoch-content">
     <div class="epoch-left">
       <div class="era-tag prehistory-tag">{data.epochs.prehistory.eraTag}</div>
-      <h2 class="epoch-title prehistory-font" set:html={data.epochs.prehistory.title} />
+      <h2
+        class="epoch-title prehistory-font"
+        set:html={data.epochs.prehistory.title}
+      />
       <div class="prehistory-hr"></div>
       <p class="epoch-desc">
         {data.epochs.prehistory.description}
@@ -173,7 +173,9 @@ const withBase = (path: string) => {
     <div class="epoch-right prehistory-deco" aria-hidden="true">
       <div class="generic-border-deco">
         <div class="generic-inner-deco">
-          <div class="generic-glyph prehistory-text-color">{data.epochs.prehistory.decoLabel}</div>
+          <div class="generic-glyph prehistory-text-color">
+            {data.epochs.prehistory.decoLabel}
+          </div>
         </div>
       </div>
     </div>
@@ -248,7 +250,9 @@ const withBase = (path: string) => {
     <div class="epoch-right greece-deco" aria-hidden="true">
       <div class="generic-border-deco">
         <div class="generic-inner-deco">
-          <div class="generic-glyph greece-text-color">{data.epochs.greece.decoLabel}</div>
+          <div class="generic-glyph greece-text-color">
+            {data.epochs.greece.decoLabel}
+          </div>
         </div>
       </div>
     </div>
@@ -301,7 +305,10 @@ const withBase = (path: string) => {
   <div class="epoch-content">
     <div class="epoch-left">
       <div class="era-tag medieval-tag">{data.epochs.medieval.eraTag}</div>
-      <h2 class="epoch-title medieval-font" set:html={data.epochs.medieval.title} />
+      <h2
+        class="epoch-title medieval-font"
+        set:html={data.epochs.medieval.title}
+      />
       <div class="medieval-hr"></div>
       <p class="epoch-desc">
         {data.epochs.medieval.description}
@@ -320,7 +327,9 @@ const withBase = (path: string) => {
     <div class="epoch-right medieval-deco" aria-hidden="true">
       <div class="generic-border-deco">
         <div class="generic-inner-deco">
-          <div class="generic-glyph medieval-text-color">{data.epochs.medieval.decoLabel}</div>
+          <div class="generic-glyph medieval-text-color">
+            {data.epochs.medieval.decoLabel}
+          </div>
         </div>
       </div>
     </div>
@@ -380,7 +389,10 @@ const withBase = (path: string) => {
   <div class="epoch-content">
     <div class="epoch-left">
       <div class="era-tag discovery-tag">{data.epochs.discovery.eraTag}</div>
-      <h2 class="epoch-title discovery-font" set:html={data.epochs.discovery.title} />
+      <h2
+        class="epoch-title discovery-font"
+        set:html={data.epochs.discovery.title}
+      />
       <div class="discovery-hr"></div>
       <p class="epoch-desc">
         {data.epochs.discovery.description}
@@ -399,7 +411,9 @@ const withBase = (path: string) => {
     <div class="epoch-right discovery-deco" aria-hidden="true">
       <div class="generic-border-deco">
         <div class="generic-inner-deco">
-          <div class="generic-glyph discovery-text-color">{data.epochs.discovery.decoLabel}</div>
+          <div class="generic-glyph discovery-text-color">
+            {data.epochs.discovery.decoLabel}
+          </div>
         </div>
       </div>
     </div>
@@ -416,8 +430,13 @@ const withBase = (path: string) => {
   <div class="epoch-overlay enlightenment-overlay"></div>
   <div class="epoch-content">
     <div class="epoch-left">
-      <div class="era-tag enlightenment-tag">{data.epochs.enlightenment.eraTag}</div>
-      <h2 class="epoch-title enlightenment-font" set:html={data.epochs.enlightenment.title} />
+      <div class="era-tag enlightenment-tag">
+        {data.epochs.enlightenment.eraTag}
+      </div>
+      <h2
+        class="epoch-title enlightenment-font"
+        set:html={data.epochs.enlightenment.title}
+      />
       <div class="enlightenment-hr"></div>
       <p class="epoch-desc">
         {data.epochs.enlightenment.description}
@@ -436,7 +455,9 @@ const withBase = (path: string) => {
     <div class="epoch-right enlightenment-deco" aria-hidden="true">
       <div class="generic-border-deco">
         <div class="generic-inner-deco">
-          <div class="generic-glyph enlightenment-text-color">{data.epochs.enlightenment.decoLabel}</div>
+          <div class="generic-glyph enlightenment-text-color">
+            {data.epochs.enlightenment.decoLabel}
+          </div>
         </div>
       </div>
     </div>
@@ -581,7 +602,7 @@ const withBase = (path: string) => {
   const siteHeader = document.getElementById("site-header");
   const scrollHint = document.getElementById("scroll-hint");
 
-    const epochNames = [
+  const epochNames = [
     "Inicio",
     "Prehistoria",
     "Egipcia",
@@ -595,7 +616,7 @@ const withBase = (path: string) => {
     "Moderna",
     "Cyberpunk",
   ];
-    const epochClasses = [
+  const epochClasses = [
     "intro",
     "prehistory",
     "egypt",
