@@ -30,6 +30,10 @@ demos:
     description: "Reproductor multimedia inmersivo con sincronización de letras multiidioma en tiempo real y renderizado interactivo del espectro de audio."
     image: "/index/es/lyricflow.png"
     url: "https://lyric-flow-lime.vercel.app"
+  - name: "TypoCraft"
+    description: "Un editor interactivo de Markdown que transforma tu escritura en arte tipográfico. TypoCraft permite visualizar y escribir contenido Markdown con múltiples temas diseñados para realzar la belleza de la tipografía"
+    image: "/index/es/typocraft.png"
+    url: "https://hc-online.github.io/TypoCraft/"
 languageSwitch:
   label: "Switch to English"
   url: "/en"
