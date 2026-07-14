@@ -26,6 +26,10 @@ demos:
     description: "Experiencia inmersiva de scroll que recorre las épocas de la humanidad con transiciones visuales y narrativa temporal."
     image: "/index/es/aeterna.png"
     url: "/es/aeterna"
+  - name: "LyricFlow"
+    description: "Reproductor multimedia inmersivo con sincronización de letras multiidioma en tiempo real y renderizado interactivo del espectro de audio."
+    image: "/index/es/lyricflow.png"
+    url: "https://lyric-flow-lime.vercel.app"
 languageSwitch:
   label: "Switch to English"
   url: "/en"
