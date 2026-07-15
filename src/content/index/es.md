@@ -34,6 +34,10 @@ demos:
     description: "Un editor interactivo de Markdown que transforma tu escritura en arte tipográfico. TypoCraft permite visualizar y escribir contenido Markdown con múltiples temas diseñados para realzar la belleza de la tipografía"
     image: "/index/es/typocraft.png"
     url: "https://hc-online.github.io/TypoCraft/"
+  - name: "ORBIT-UI"
+    description: "ORBIT-UI es una base lógica y organizada que te ayuda a construir páginas web rápidas y consistentes usando Astro y Tailwind CSS."
+    image: "/index/es/orbit-ui.png"
+    url: "https://hc-online.github.io/ORBIT-UI/"
 languageSwitch:
   label: "Switch to English"
   url: "/en"
