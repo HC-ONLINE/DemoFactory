@@ -71,8 +71,7 @@ La capa comun solo debe cubrir lo necesario para el proyecto completo:
 │   │       ├── types.ts
 │   │       └── Demo.astro
 │   ├── layouts/
-│   │   ├── BaseLayout.astro       # Layout general del sitio
-│   │   └── DemoLayout.astro       # Layout comun para las paginas de demo
+│   │   └── Layout.astro       # Layout general del sitio
 │   ├── lib/
 │   │   ├── i18n/                  # Helpers comunes para idioma y rutas
 │   │   └── content/               # Utilidades para leer Markdown o colecciones
