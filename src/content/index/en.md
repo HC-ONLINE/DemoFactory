@@ -38,6 +38,10 @@ demos:
     description: "ORBIT-UI is a logical and structured foundation designed to help you build fast, consistent websites using Astro and Tailwind CSS."
     image: "/index/en/orbit-ui.png"
     url: "https://hc-online.github.io/ORBIT-UI/"
+  - name: "AuraWeather"
+    description: "Immersive weather application displaying real-time meteorological conditions with dynamic animations and atmospheric design."
+    image: "/index/en/aura-weather.png"
+    url: "/en/aura_weater"
 languageSwitch:
   label: "Cambiar a Español"
   url: "/"
