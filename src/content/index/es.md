@@ -41,7 +41,7 @@ demos:
   - name: "AuraWeather"
     description: "Aplicación de clima con interfaz inmersiva que muestra condiciones meteorológicas en tiempo real con animaciones dinámicas y diseño atmosférico."
     image: "/index/es/aura-weather.png"
-    url: "/es/aura_weater"
+    url: "/es/aura_weather"
 languageSwitch:
   label: "Switch to English"
   url: "/en"
