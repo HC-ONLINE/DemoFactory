@@ -1,0 +1,46 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import AuraWeatherApp from "@/components/aura_weather/App.astro";
+import * as page from "@/content/demos/aura_weather/es.md";
+
+const data = page.frontmatter as {
+  title: string;
+  description: string;
+  searchPlaceholder: string;
+  locationButton: string;
+  temperatureUnit: string;
+  windLabel: string;
+  humidityLabel: string;
+  feelsLikeLabel: string;
+  loadingText: string;
+  demoButton: string;
+};
+const Content = page.Content;
+---
+
+<Layout
+  title={data.title}
+  description={data.description}
+  lang="es"
+  bodyClass="min-h-full bg-slate-950 text-slate-100 antialiased"
+>
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    slot="head"
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin="anonymous"
+  />
+  <link
+    slot="head"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <AuraWeatherApp
+    content={data}
+    lang="es"
+  >
+    <Content />
+  </AuraWeatherApp>
+</Layout>

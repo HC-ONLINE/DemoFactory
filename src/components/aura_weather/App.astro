@@ -1,0 +1,896 @@
+---
+interface Props {
+  content?: {
+    title?: string;
+    description?: string;
+    searchPlaceholder?: string;
+    locationButton?: string;
+    temperatureUnit?: string;
+    windLabel?: string;
+    humidityLabel?: string;
+    feelsLikeLabel?: string;
+    loadingText?: string;
+    demoButton?: string;
+  };
+  lang?: string;
+}
+
+const { content = {}, lang = "es" } = Astro.props;
+
+const title = content.title || "El Espejo del Clima";
+const description = content.description || "";
+const searchPlaceholder = content.searchPlaceholder || "Buscar ciudad...";
+const locationButton = content.locationButton || "Mi ubicación";
+const temperatureUnit = content.temperatureUnit || "°C";
+const windLabel = content.windLabel || "Viento";
+const humidityLabel = content.humidityLabel || "Humedad";
+const feelsLikeLabel = content.feelsLikeLabel || "Sensación";
+const loadingText = content.loadingText || "Cargando...";
+const demoButton = content.demoButton || "Demostración";
+---
+
+<div
+  id="aura-weather-root"
+  class="relative w-screen h-screen overflow-hidden bg-slate-950"
+  data-lang={lang}
+  data-demo-button={demoButton}
+>
+  <div id="map-container" class="absolute inset-0 z-0"></div>
+
+  <div
+    id="weather-gradient"
+    class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-1000"
+  >
+  </div>
+
+  <canvas
+    id="weather-particles"
+    class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
+  ></canvas>
+
+  <canvas
+    id="metaball-canvas"
+    class="absolute top-0 left-0 w-full h-full z-25 pointer-events-none hidden"
+  ></canvas>
+
+  <div
+    id="transition-indicator"
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none opacity-0 transition-opacity duration-300"
+  >
+    <div
+      class="flex items-center gap-3 px-5 py-3 bg-black/40 backdrop-blur-xl rounded-full border border-white/10"
+    >
+      <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+      <span id="transition-text" class="text-white/70 text-sm font-medium"
+      ></span>
+    </div>
+  </div>
+
+  <div id="weather-ui" class="absolute inset-0 z-30 pointer-events-none">
+    <div
+      id="search-container"
+      class="absolute top-12 right-8 pointer-events-auto"
+    >
+      <div
+        id="search-wrapper"
+        class="relative flex items-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-visible"
+      >
+        <span
+          class="pl-5 pr-3 py-3.5 text-white/90 text-lg font-semibold tracking-wide select-none whitespace-nowrap border-r border-white/10"
+          >AuraWeather</span
+        >
+        <div class="relative flex items-center flex-1">
+          <svg
+            class="absolute left-4 w-5 h-5 text-white/60"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input
+            id="search-input"
+            type="text"
+            placeholder={searchPlaceholder}
+            class="w-full md:w-95 pl-12 pr-24 py-3.5 bg-transparent text-white placeholder-white/50 focus:outline-none focus:ring-0 transition-colors overflow-hidden text-ellipsis"
+            autocomplete="off"
+          />
+          <div class="absolute right-2 flex items-center gap-1">
+            <button
+              id="location-btn"
+              class="p-2 text-white/60 hover:text-white transition-colors rounded-xl hover:bg-white/10"
+              title={locationButton}
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </button>
+            <button
+              id="demo-btn"
+              class="flex items-center gap-1.5 p-2 pr-3 text-white/60 hover:text-white transition-colors rounded-xl hover:bg-white/10 border-l border-white/10 pl-3"
+              title={demoButton}
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-sm font-medium whitespace-nowrap"
+                >{demoButton}</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="search-dropdown"
+        class="absolute top-full right-0 bg-black/40 backdrop-blur-xl border border-t-0 border-white/10 rounded-b-2xl overflow-hidden hidden"
+      >
+        <div id="search-results" class="max-h-64 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <div id="weather-info" class="absolute bottom-8 left-8 pointer-events-auto">
+      <div class="flex flex-col gap-1">
+        <div
+          id="city-name"
+          class="text-white/70 text-sm font-medium tracking-wide"
+        >
+        </div>
+        <div
+          id="temperature"
+          class="text-white text-7xl md:text-8xl font-light tracking-tighter leading-none"
+        >
+        </div>
+        <div id="weather-description" class="text-white/60 text-lg mt-1"></div>
+        <div id="weather-details" class="mt-4 hidden md:block">
+          <div class="flex gap-6 text-white/50 text-sm">
+            <div class="flex flex-col gap-1">
+              <span class="text-xs uppercase tracking-wider">{windLabel}</span>
+              <span id="wind-speed" class="text-white/80 text-lg"></span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs uppercase tracking-wider"
+                >{humidityLabel}</span
+              >
+              <span id="humidity" class="text-white/80 text-lg"></span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs uppercase tracking-wider"
+                >{feelsLikeLabel}</span
+              >
+              <span id="feels-like" class="text-white/80 text-lg"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="loading-overlay"
+      class="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm z-50"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <div
+          class="w-10 h-10 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"
+        >
+        </div>
+        <div class="text-white/60 text-sm">{loadingText}</div>
+      </div>
+    </div>
+  </div>
+
+  <slot />
+</div>
+
+<script>
+  const ROOT_ID = "aura-weather-root";
+  const root = document.getElementById(ROOT_ID);
+  if (!root) throw new Error(`Root element #${ROOT_ID} not found`);
+
+  const SEARCH_INPUT = "search-input";
+  const SEARCH_DROPDOWN = "search-dropdown";
+  const SEARCH_RESULTS = "search-results";
+  const MAP_CONTAINER = "map-container";
+  const WEATHER_GRADIENT = "weather-gradient";
+  const WEATHER_PARTICLES = "weather-particles";
+  const METABALL_CANVAS = "metaball-canvas";
+  const TRANSITION_INDICATOR = "transition-indicator";
+  const TRANSITION_TEXT = "transition-text";
+  const CITY_NAME = "city-name";
+  const TEMPERATURE = "temperature";
+  const WEATHER_DESCRIPTION = "weather-description";
+  const WIND_SPEED = "wind-speed";
+  const HUMIDITY = "humidity";
+  const FEELS_LIKE = "feels-like";
+  const LOADING_OVERLAY = "loading-overlay";
+  const LOCATION_BTN = "location-btn";
+  const DEMO_BTN = "demo-btn";
+
+  const LANG = root.getAttribute("data-lang") || "es";
+  const SEARCH_PLACEHOLDER =
+    root.getAttribute("data-search-placeholder") || "Buscar ciudad...";
+  const LOCATION_BUTTON =
+    root.getAttribute("data-location-button") || "Mi ubicación";
+  const TEMPERATURE_UNIT = root.getAttribute("data-temperature-unit") || "°C";
+  const DEMO_BUTTON_LABEL =
+    root.getAttribute("data-demo-button") || "Demostración";
+
+  const state = {
+    currentWeather: null as any,
+    currentLocation: null as any,
+    mapInstance: null as any,
+    particleSystem: null as any,
+    metaballTransition: null as any,
+    currentTheme: null as any,
+    targetTheme: null as any,
+    animationFrame: null as number | null,
+    searchTimeout: null as ReturnType<typeof setTimeout> | null,
+    searchResults: [] as any[],
+    previousWeatherState: null as string | null,
+  };
+
+  function showTransition(text: string) {
+    const indicator = document.getElementById(TRANSITION_INDICATOR);
+    const textEl = document.getElementById(TRANSITION_TEXT);
+    if (indicator) indicator.style.opacity = "1";
+    if (textEl) textEl.textContent = text;
+  }
+
+  function hideTransition() {
+    const indicator = document.getElementById(TRANSITION_INDICATOR);
+    if (indicator) indicator.style.opacity = "0";
+  }
+
+  function showLoading() {
+    const el = document.getElementById(LOADING_OVERLAY);
+    if (el) el.classList.remove("hidden");
+  }
+
+  function hideLoading() {
+    const el = document.getElementById(LOADING_OVERLAY);
+    if (el) el.classList.add("hidden");
+  }
+
+  function updateWeatherInfo(weather: any, location: any) {
+    const cityNameEl = document.getElementById(CITY_NAME);
+    const tempEl = document.getElementById(TEMPERATURE);
+    const descEl = document.getElementById(WEATHER_DESCRIPTION);
+    const windEl = document.getElementById(WIND_SPEED);
+    const humidityEl = document.getElementById(HUMIDITY);
+    const feelsLikeEl = document.getElementById(FEELS_LIKE);
+
+    if (cityNameEl) {
+      const parts = [location.name];
+      if (location.admin1) parts.push(location.admin1);
+      if (location.country) parts.push(location.country);
+      cityNameEl.textContent = parts.join(", ");
+    }
+
+    if (tempEl)
+      tempEl.textContent = `${weather.temperature}${TEMPERATURE_UNIT}`;
+    if (descEl) {
+      const descriptions: Record<string, { es: string; en: string }> = {
+        storm: { es: "Tormenta", en: "Storm" },
+        sunny: { es: "Soleado", en: "Sunny" },
+        fog: { es: "Niebla", en: "Fog" },
+        rain: { es: "Lluvia", en: "Rain" },
+        snow: { es: "Nieve", en: "Snow" },
+        clear: { es: "Despejado", en: "Clear" },
+      };
+      descEl.textContent =
+        descriptions[weather.state]?.[LANG as "es" | "en"] || weather.state;
+    }
+    if (windEl) windEl.textContent = `${Math.round(weather.windSpeed)} km/h`;
+    if (humidityEl) humidityEl.textContent = `${weather.humidity}%`;
+    if (feelsLikeEl)
+      feelsLikeEl.textContent = `${weather.apparentTemperature}${TEMPERATURE_UNIT}`;
+  }
+
+  function updateGradient(theme: any) {
+    const gradientEl = document.getElementById(WEATHER_GRADIENT);
+    if (!gradientEl) return;
+
+    gradientEl.style.background = `radial-gradient(ellipse at 30% 20%, ${theme.gradient[0]} 0%, ${theme.gradient[1]} 35%, ${theme.gradient[2]} 65%, ${theme.gradient[3]} 100%)`;
+    gradientEl.style.opacity = theme.overlayOpacity.toString();
+
+    const weatherInfo = document.getElementById("weather-info");
+    const weatherDetails = document.getElementById("weather-details");
+    const cityName = document.getElementById("city-name");
+    const temperature = document.getElementById("temperature");
+    const weatherDescription = document.getElementById("weather-description");
+    const windSpeed = document.getElementById("wind-speed");
+    const humidity = document.getElementById("humidity");
+    const feelsLike = document.getElementById("feels-like");
+
+    if (weatherInfo) {
+      weatherInfo.style.background = theme.background;
+      weatherInfo.style.backdropFilter = "blur(12px)";
+      weatherInfo.style.borderRadius = "16px";
+      weatherInfo.style.padding = "16px 20px";
+      weatherInfo.style.border = `1px solid ${theme.border}`;
+    }
+
+    if (cityName) cityName.style.color = theme.textMuted;
+    if (temperature) temperature.style.color = theme.textPrimary;
+    if (weatherDescription)
+      weatherDescription.style.color = theme.textSecondary;
+    if (windSpeed) windSpeed.style.color = theme.textPrimary;
+    if (humidity) humidity.style.color = theme.textPrimary;
+    if (feelsLike) feelsLike.style.color = theme.textPrimary;
+
+    const detailLabels = weatherDetails?.querySelectorAll(".text-xs");
+    detailLabels?.forEach((label) => {
+      (label as HTMLElement).style.color = theme.textMuted;
+    });
+  }
+
+  function selectCity(index: number) {
+    const input = document.getElementById(SEARCH_INPUT) as HTMLInputElement;
+    const dropdown = document.getElementById(SEARCH_DROPDOWN);
+    const city = state.searchResults[index];
+
+    if (!city) return;
+
+    if (input) input.value = city.name;
+    if (dropdown) dropdown.classList.add("hidden");
+
+    if (state.mapInstance) {
+      state.mapInstance.flyTo({
+        latitude: city.latitude,
+        longitude: city.longitude,
+        name: city.name,
+        country: city.country,
+        admin1: city.admin1 || "",
+      });
+    }
+  }
+
+  function initSearch() {
+    const input = document.getElementById(SEARCH_INPUT) as HTMLInputElement;
+    const dropdown = document.getElementById(SEARCH_DROPDOWN);
+    const resultsContainer = document.getElementById(SEARCH_RESULTS);
+
+    if (!input || !dropdown || !resultsContainer) return;
+
+    let isDropdownVisible = false;
+
+    input.addEventListener("input", () => {
+      if (state.searchTimeout) clearTimeout(state.searchTimeout);
+
+      const query = input.value.trim();
+      if (query.length < 2) {
+        dropdown.classList.add("hidden");
+        isDropdownVisible = false;
+        return;
+      }
+
+      state.searchTimeout = setTimeout(async () => {
+        try {
+          const { searchCities } = await import("./scripts/weather.ts");
+          const cities = await searchCities(query, 5);
+          state.searchResults = cities;
+
+          if (cities.length === 0) {
+            dropdown.classList.add("hidden");
+            isDropdownVisible = false;
+            return;
+          }
+
+          resultsContainer.innerHTML = cities
+            .map(
+              (city: any, index: number) => `
+            <button
+              type="button"
+              class="w-full px-4 py-3 text-left text-white hover:bg-white/10 focus:bg-white/10 transition-colors flex flex-col gap-0.5 cursor-pointer"
+              data-index="${index}"
+            >
+              <span class="text-sm font-medium">${city.name}</span>
+              <span class="text-xs text-white/50">${city.admin1 ? city.admin1 + ", " : ""}${city.country}</span>
+            </button>
+          `,
+            )
+            .join("");
+
+          dropdown.classList.remove("hidden");
+          isDropdownVisible = true;
+
+          resultsContainer.querySelectorAll("button").forEach((btn) => {
+            btn.addEventListener("mousedown", (e) => {
+              e.preventDefault();
+              const idx = parseInt(btn.getAttribute("data-index") || "0");
+              selectCity(idx);
+              isDropdownVisible = false;
+            });
+          });
+        } catch (err) {
+          console.error("Search error:", err);
+        }
+      }, 300);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && isDropdownVisible) {
+        const firstBtn = resultsContainer.querySelector("button");
+        if (firstBtn) {
+          firstBtn.dispatchEvent(new Event("mousedown", { cancelable: true }));
+        }
+      }
+      if (e.key === "Escape") {
+        dropdown.classList.add("hidden");
+        isDropdownVisible = false;
+        input.blur();
+      }
+    });
+
+    input.addEventListener("blur", () => {
+      setTimeout(() => {
+        dropdown.classList.add("hidden");
+        isDropdownVisible = false;
+      }, 150);
+    });
+
+    dropdown.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+    });
+
+    const locationBtn = document.getElementById(LOCATION_BTN);
+    if (locationBtn) {
+      locationBtn.addEventListener("click", async () => {
+        showLoading();
+        try {
+          const { getUserLocation } = await import("./scripts/map.ts");
+          const location = await getUserLocation();
+          if (location && state.mapInstance) {
+            state.mapInstance.flyTo(location);
+            input.value = location.name;
+          }
+        } catch (err) {
+          console.error("Location error:", err);
+        }
+        hideLoading();
+      });
+    }
+  }
+
+  async function init() {
+    showLoading();
+    initSearch();
+
+    try {
+      const { initMap, getUserLocation } = await import("./scripts/map.ts");
+      const { fetchWeather, reverseGeocode } =
+        await import("./scripts/weather.ts");
+      const { getThemeForState } = await import("./scripts/gradients.ts");
+      const { ParticleSystem } = await import("./scripts/particles.ts");
+      const { MetaballTransition } = await import("./scripts/metaballs.ts");
+
+      const mapContainer = document.getElementById(MAP_CONTAINER);
+      if (!mapContainer) throw new Error("Map container not found");
+
+      let initialLocation = await getUserLocation();
+      if (!initialLocation) {
+        initialLocation = {
+          latitude: 4.6097,
+          longitude: -74.0817,
+          name: "Bogotá",
+          country: "Colombia",
+        };
+      }
+
+      const mapInstance = initMap(
+        mapContainer,
+        [initialLocation.longitude, initialLocation.latitude],
+        initialLocation.name === "Bogotá" ? 5 : 10,
+      );
+      state.mapInstance = mapInstance;
+
+      const particleCanvas = document.getElementById(
+        WEATHER_PARTICLES,
+      ) as HTMLCanvasElement;
+      if (particleCanvas) {
+        state.particleSystem = new ParticleSystem(particleCanvas);
+      }
+
+      const metaballCanvas = document.getElementById(
+        METABALL_CANVAS,
+      ) as HTMLCanvasElement;
+      const metaballOverlay = document.getElementById("weather-gradient") as HTMLDivElement;
+      if (metaballCanvas && metaballOverlay) {
+        state.metaballTransition = new MetaballTransition(
+          metaballOverlay,
+          metaballCanvas,
+        );
+      }
+
+      const input = document.getElementById(SEARCH_INPUT) as HTMLInputElement;
+      if (input && initialLocation) {
+        input.value = initialLocation.name;
+      }
+
+      let lastFetchLocation = "";
+
+      const weatherDescriptions: Record<string, { es: string; en: string }> = {
+        storm: { es: "Tormenta detectada", en: "Storm detected" },
+        sunny: { es: "Clima soleado", en: "Sunny weather" },
+        fog: { es: "Niebla detectada", en: "Fog detected" },
+        rain: { es: "Lluvia detectada", en: "Rain detected" },
+        snow: { es: "Nieve detectada", en: "Snow detected" },
+        clear: { es: "Clima despejado", en: "Clear weather" },
+      };
+
+      async function updateWeatherForLocation(camera: any) {
+        const locationKey = `${Math.round(camera.center.lat * 10)}/${Math.round(camera.center.lng * 10)}`;
+        if (locationKey === lastFetchLocation) return;
+        lastFetchLocation = locationKey;
+
+        try {
+          const [weather, location] = await Promise.all([
+            fetchWeather(camera.center.lat, camera.center.lng),
+            reverseGeocode(camera.center.lat, camera.center.lng),
+          ]);
+
+          const previousState = state.previousWeatherState;
+          const newState = weather.state;
+
+          state.currentWeather = weather;
+          state.currentLocation = location;
+
+          const fromTheme = state.currentTheme || getThemeForState(newState);
+          const toTheme = getThemeForState(newState);
+
+          if (
+            previousState &&
+            previousState !== newState &&
+            state.metaballTransition
+          ) {
+            showTransition(
+              weatherDescriptions[newState]?.[LANG as "es" | "en"] || newState,
+            );
+
+            state.metaballTransition.startTransition(
+              fromTheme.gradient,
+              toTheme.gradient,
+            );
+
+            setTimeout(() => {
+              hideTransition();
+            }, 1800);
+          }
+
+          state.currentTheme = toTheme;
+          state.previousWeatherState = newState;
+
+          updateGradient(toTheme);
+          updateWeatherInfo(weather, location);
+
+          if (input) {
+            input.value = location.name;
+          }
+
+          if (state.particleSystem) {
+            state.particleSystem.setWeather(weather.state);
+            state.particleSystem.setWind(
+              Math.cos((weather.windDirection * Math.PI) / 180) *
+                weather.windSpeed,
+              Math.sin((weather.windDirection * Math.PI) / 180) *
+                weather.windSpeed,
+            );
+          }
+        } catch (err) {
+          console.error("Weather fetch error:", err);
+        }
+      }
+
+      mapInstance.onMoveEnd(updateWeatherForLocation);
+
+      mapInstance.onDrag((velocity) => {
+        if (state.particleSystem) {
+          state.particleSystem.addInertia(velocity.vx, velocity.vy);
+        }
+      });
+
+      const initialCamera = mapInstance.getCamera();
+      await updateWeatherForLocation(initialCamera);
+
+      window.addEventListener("resize", () => {
+        if (state.particleSystem) state.particleSystem.resize();
+        if (state.metaballTransition) state.metaballTransition.resize();
+        mapInstance.map.resize();
+      });
+
+      const DEMO_STATES = [
+        {
+          state: "storm" as const,
+          temp: 18,
+          wind: 45,
+          humidity: 92,
+          feelsLike: 14,
+        },
+        {
+          state: "rain" as const,
+          temp: 14,
+          wind: 30,
+          humidity: 85,
+          feelsLike: 11,
+        },
+        {
+          state: "snow" as const,
+          temp: -3,
+          wind: 15,
+          humidity: 78,
+          feelsLike: -7,
+        },
+        {
+          state: "fog" as const,
+          temp: 10,
+          wind: 8,
+          humidity: 95,
+          feelsLike: 8,
+        },
+        {
+          state: "sunny" as const,
+          temp: 32,
+          wind: 12,
+          humidity: 35,
+          feelsLike: 34,
+        },
+        {
+          state: "clear" as const,
+          temp: 22,
+          wind: 10,
+          humidity: 50,
+          feelsLike: 21,
+        },
+      ];
+
+      const demoDescriptions: Record<string, { es: string; en: string }> = {
+        storm: { es: "Tormenta detectada", en: "Storm detected" },
+        sunny: { es: "Clima soleado", en: "Sunny weather" },
+        fog: { es: "Niebla detectada", en: "Fog detected" },
+        rain: { es: "Lluvia detectada", en: "Rain detected" },
+        snow: { es: "Nieve detectada", en: "Snow detected" },
+        clear: { es: "Clima despejado", en: "Clear weather" },
+      };
+
+      let isDemoRunning = false;
+
+      async function runDemo() {
+        if (isDemoRunning) return;
+        isDemoRunning = true;
+
+        const demoBtn = document.getElementById(DEMO_BTN) as HTMLButtonElement;
+        if (demoBtn) {
+          demoBtn.style.opacity = "0.4";
+          demoBtn.style.pointerEvents = "none";
+        }
+
+        const savedTheme = state.currentTheme;
+        const savedWeather = state.currentWeather;
+        const savedLocation = state.currentLocation;
+        const savedPrevState = state.previousWeatherState;
+
+        for (let i = 0; i < DEMO_STATES.length; i++) {
+          const demo = DEMO_STATES[i];
+          const theme = getThemeForState(demo.state);
+          const fromTheme =
+            i === 0
+              ? savedTheme || theme
+              : getThemeForState(DEMO_STATES[i - 1].state);
+
+          if (i > 0 && state.metaballTransition) {
+            showTransition(
+              demoDescriptions[demo.state]?.[LANG as "es" | "en"] || demo.state,
+            );
+            state.metaballTransition.startTransition(
+              fromTheme.gradient,
+              theme.gradient,
+            );
+            setTimeout(() => hideTransition(), 1800);
+          } else if (i === 0) {
+            showTransition(
+              demoDescriptions[demo.state]?.[LANG as "es" | "en"] || demo.state,
+            );
+            if (state.metaballTransition) {
+              state.metaballTransition.startTransition(
+                fromTheme.gradient,
+                theme.gradient,
+              );
+            }
+            setTimeout(() => hideTransition(), 1800);
+          }
+
+          state.currentTheme = theme;
+          state.previousWeatherState = demo.state;
+          updateGradient(theme);
+
+          const fakeWeather = {
+            temperature: demo.temp,
+            apparentTemperature: demo.feelsLike,
+            humidity: demo.humidity,
+            weatherCode: 0,
+            cloudCover: 0,
+            windSpeed: demo.wind,
+            windDirection: 180,
+            precipitation: 0,
+            isDay: true,
+            state: demo.state,
+          };
+
+          const fakeLocation = {
+            latitude: 0,
+            longitude: 0,
+            name:
+              demo.state === "storm"
+                ? "Ciudad de la Tormenta"
+                : demo.state === "rain"
+                  ? "Puerto de Lluvia"
+                  : demo.state === "snow"
+                    ? "Montaña Nevada"
+                    : demo.state === "fog"
+                      ? "Valle de Niebla"
+                      : demo.state === "sunny"
+                        ? "Playa Soleada"
+                        : "Lago Despejado",
+            country: "Demo",
+            admin1: "",
+          };
+
+          updateWeatherInfo(fakeWeather, fakeLocation);
+
+          const input = document.getElementById(
+            SEARCH_INPUT,
+          ) as HTMLInputElement;
+          if (input) input.value = fakeLocation.name;
+
+          if (state.particleSystem) {
+            state.particleSystem.setWeather(demo.state);
+            state.particleSystem.setWind(
+              Math.cos((180 * Math.PI) / 180) * demo.wind,
+              Math.sin((180 * Math.PI) / 180) * demo.wind,
+            );
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+
+        if (savedTheme) {
+          state.currentTheme = savedTheme;
+          state.previousWeatherState = savedPrevState;
+          updateGradient(savedTheme);
+        }
+
+        if (savedWeather && savedLocation) {
+          updateWeatherInfo(savedWeather, savedLocation);
+        } else if (state.particleSystem) {
+          state.particleSystem.stop();
+        }
+
+        if (state.particleSystem && savedWeather) {
+          state.particleSystem.setWeather(savedWeather.state);
+        }
+
+        const input = document.getElementById(SEARCH_INPUT) as HTMLInputElement;
+        if (input && savedLocation) {
+          input.value = savedLocation.name;
+        }
+
+        hideTransition();
+        isDemoRunning = false;
+
+        if (demoBtn) {
+          demoBtn.style.opacity = "";
+          demoBtn.style.pointerEvents = "";
+        }
+      }
+
+      const demoBtn = document.getElementById(DEMO_BTN);
+      if (demoBtn) {
+        demoBtn.addEventListener("click", runDemo);
+      }
+
+      hideLoading();
+    } catch (err) {
+      console.error("Init error:", err);
+      hideLoading();
+    }
+  }
+
+  init();
+</script>
+
+<style>
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  :global(html, body) {
+    width: 100%;
+    height: 100%;
+  }
+
+  #aura-weather-root {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  .z-25 {
+    z-index: 25;
+  }
+
+  #metaball-canvas {
+    mix-blend-mode: screen;
+  }
+
+  #transition-indicator {
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.maplibregl-ctrl-group) {
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+  }
+
+  :global(.maplibregl-ctrl-group button) {
+    background: transparent !important;
+  }
+
+  :global(.maplibregl-ctrl-group button + button) {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  :global(.maplibregl-ctrl-group button:hover) {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  :global(.maplibregl-ctrl-group button .maplibregl-ctrl-icon) {
+    filter: invert(1) brightness(0.8);
+  }
+
+  :global(.maplibregl-ctrl-attrib) {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 10px !important;
+  }
+
+  :global(.maplibregl-ctrl-attrib a) {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+</style>
