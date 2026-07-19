@@ -1,4 +1,7 @@
 ---
+import { Picture } from 'astro:assets';
+import { getImage } from '@/utils/image-registry';
+
 interface DemoLink {
   label: string;
   href: string;
@@ -103,6 +106,9 @@ const withBase = (path: string) => {
   const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
   return `${base}${normalizedPath}`.replace(/\/+/g, "/");
 };
+
+const heroImage = getImage(data.hero.image);
+const philosophyImage = getImage(data.philosophy.image);
 ---
 
 <div class="min-h-screen bg-[#121414] text-[#e2e2e2]" id="lumina-root">
@@ -136,13 +142,16 @@ const withBase = (path: string) => {
   <main>
     <section class="relative isolate min-h-screen overflow-hidden" id="home">
       <div class="absolute inset-0">
-        <img
-          alt={data.hero.title}
-          class="h-full w-full object-cover"
-          decoding="async"
-          loading="eager"
-          src={withBase(data.hero.image)}
-        />
+        {heroImage && (
+          <Picture
+            src={heroImage}
+            alt={data.hero.title}
+            loading="eager"
+            decoding="async"
+            formats={['webp']}
+            class="h-full w-full object-cover"
+          />
+        )}
         <div
           class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.65))]"
         >
@@ -218,29 +227,37 @@ const withBase = (path: string) => {
           class="grid grid-cols-1 gap-4 sm:grid-cols-4 sm:auto-rows-35 md:auto-rows-40 lg:auto-rows-35"
         >
           {
-            data.gallery.items.map((item, index) => (
-              <article
-                class={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#1e2020] ${item.className} reveal`}
-              >
-                <img
-                  alt={item.title}
-                  class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                  src={withBase(item.image)}
-                />
-                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.24)_45%,rgba(0,0,0,0.62)_100%)]" />
-                <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 overlay-text">
-                  <p class="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#abd600]">
-                    {index + 1 < 10 ? `0${index + 1}` : index + 1}
-                  </p>
-                  <h3 class="mt-1 text-sm font-semibold text-white sm:text-base">
-                    {item.title}
-                  </h3>
-                  <p class="mt-1 max-w-sm text-xs leading-5 text-[#e2e2e2]/90 sm:text-sm sm:leading-6">
-                    {item.caption}
-                  </p>
-                </div>
-              </article>
-            ))
+            data.gallery.items.map((item, index) => {
+              const itemImage = getImage(item.image);
+              return (
+                <article
+                  class={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#1e2020] ${item.className} reveal`}
+                >
+                  {itemImage && (
+                    <Picture
+                      src={itemImage}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      formats={['webp']}
+                      class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    />
+                  )}
+                  <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.24)_45%,rgba(0,0,0,0.62)_100%)]" />
+                  <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 overlay-text">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#abd600]">
+                      {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                    </p>
+                    <h3 class="mt-1 text-sm font-semibold text-white sm:text-base">
+                      {item.title}
+                    </h3>
+                    <p class="mt-1 max-w-sm text-xs leading-5 text-[#e2e2e2]/90 sm:text-sm sm:leading-6">
+                      {item.caption}
+                    </p>
+                  </div>
+                </article>
+              );
+            })
           }
         </div>
       </div>
@@ -254,11 +271,16 @@ const withBase = (path: string) => {
         class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 sm:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:px-10"
       >
         <div class="group reveal">
-          <img
-            alt={data.philosophy.title}
-            class="h-full min-h-90 w-full rounded-4xl border border-white/10 object-cover"
-            src={withBase(data.philosophy.image)}
-          />
+          {philosophyImage && (
+            <Picture
+              src={philosophyImage}
+              alt={data.philosophy.title}
+              loading="lazy"
+              decoding="async"
+              formats={['webp']}
+              class="h-full min-h-90 w-full rounded-4xl border border-white/10 object-cover"
+            />
+          )}
         </div>
         <div class="reveal">
           <p
@@ -310,28 +332,36 @@ const withBase = (path: string) => {
 
       <div class="grid gap-6 lg:grid-cols-3">
         {
-          data.services.cards.map((card) => (
-            <article class="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#1e2020] reveal">
-              <div class="aspect-2/3 overflow-hidden">
-                <img
-                  alt={card.title}
-                  class="h-full w-full object-cover"
-                  src={withBase(card.image)}
-                />
-              </div>
-              <div class="p-7">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#abd600]">
-                  {card.badge}
-                </p>
-                <h3 class="mt-3 text-2xl font-semibold text-white">
-                  {card.title}
-                </h3>
-                <p class="mt-3 text-base leading-7 text-[#cfc4c5]">
-                  {card.description}
-                </p>
-              </div>
-            </article>
-          ))
+          data.services.cards.map((card) => {
+            const cardImage = getImage(card.image);
+            return (
+              <article class="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#1e2020] reveal">
+                <div class="aspect-2/3 overflow-hidden">
+                  {cardImage && (
+                    <Picture
+                      src={cardImage}
+                      alt={card.title}
+                      loading="lazy"
+                      decoding="async"
+                      formats={['webp']}
+                      class="h-full w-full object-cover"
+                    />
+                  )}
+                </div>
+                <div class="p-7">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#abd600]">
+                    {card.badge}
+                  </p>
+                  <h3 class="mt-3 text-2xl font-semibold text-white">
+                    {card.title}
+                  </h3>
+                  <p class="mt-3 text-base leading-7 text-[#cfc4c5]">
+                    {card.description}
+                  </p>
+                </div>
+              </article>
+            );
+          })
         }
       </div>
     </section>

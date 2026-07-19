@@ -1,4 +1,7 @@
 ---
+import { Picture } from 'astro:assets';
+import { getImage } from '@/utils/image-registry';
+
 interface TimelineEvent {
   time: string;
   title: string;
@@ -42,6 +45,7 @@ const { events } = Astro.props as Props;
   {
     events.map((event, index) => {
       const isEven = index % 2 === 0;
+      const eventImage = getImage(event.image);
 
       return (
         <article
@@ -70,11 +74,16 @@ const { events } = Astro.props as Props;
 
             <div class="overflow-hidden rounded-4xl border border-[#d7c8b1] bg-[#efe6d7] shadow-[0_24px_60px_rgba(44,31,18,0.08)]">
               <div class="media-frame relative aspect-4/3">
-                <img
-                  alt={event.title}
-                  class="absolute inset-0 h-full w-full object-cover grayscale"
-                  src={withBase(event.image)}
-                />
+                {eventImage && (
+                  <Picture
+                    src={eventImage}
+                    alt={event.title}
+                    loading="lazy"
+                    decoding="async"
+                    formats={['webp']}
+                    class="absolute inset-0 h-full w-full object-cover grayscale"
+                  />
+                )}
                 <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.05),rgba(0,0,0,0.25))]" />
                 <div class="absolute inset-0 border border-white/35" />
                 <div class="absolute inset-0 flex items-end p-6 text-center">

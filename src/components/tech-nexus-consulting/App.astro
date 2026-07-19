@@ -1,4 +1,7 @@
 ---
+import { Picture } from 'astro:assets';
+import { getImage } from '@/utils/image-registry';
+
 interface DemoLink {
   label: string;
   href: string;
@@ -104,6 +107,8 @@ const withBase = (path: string) => {
   const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
   return `${base}${normalizedPath}`.replace(/\/+/, "/");
 };
+
+const heroImage = getImage(data.hero.image);
 ---
 
 <div class="min-h-screen bg-slate-50 text-slate-900" id="tech-nexus-root">
@@ -226,11 +231,16 @@ const withBase = (path: string) => {
           <div
             class="rounded-4xl border border-slate-200 bg-white p-4 shadow-[0_30px_80px_rgba(15,23,42,0.12)]"
           >
-            <img
-              alt={data.hero.title}
-              class="h-105 w-full rounded-[1.4rem] object-cover"
-              src={withBase(data.hero.image)}
-            />
+            {heroImage && (
+              <Picture
+                src={heroImage}
+                alt={data.hero.title}
+                loading="eager"
+                decoding="async"
+                formats={['webp']}
+                class="h-105 w-full rounded-[1.4rem] object-cover"
+              />
+            )}
             <div
               class="mt-4 rounded-[1.2rem] border border-blue-100 bg-blue-50/70 p-5"
             >

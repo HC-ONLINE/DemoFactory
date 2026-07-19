@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+import { getImage } from '@/utils/image-registry';
 import Timeline from "./Timeline.astro";
 
 interface DemoLink {
@@ -98,6 +100,10 @@ const withBase = (path: string) => {
   const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
   return `${base}${normalizedPath}`.replace(/\/+/g, "/");
 };
+
+const heroImage = getImage(data.hero.image);
+const storyImage = getImage(data.story.image);
+const venueMapImage = getImage('/elite-vows/maps.jpg');
 ---
 
 <div
@@ -168,13 +174,16 @@ const withBase = (path: string) => {
       class="hero-parallax absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.1),rgba(18,14,10,0.35)),linear-gradient(135deg,rgba(255,255,255,0.4),rgba(199,172,126,0.25))]"
       data-placeholder="Hero image pending"
     >
-      <img
-        alt={data.hero.title}
-        class="absolute inset-0 hidden h-full w-full object-cover grayscale md:block"
-        decoding="async"
-        loading="eager"
-        src={withBase(data.hero.image)}
-      />
+      {heroImage && (
+        <Picture
+          src={heroImage}
+          alt={data.hero.title}
+          loading="eager"
+          decoding="async"
+          formats={['webp']}
+          class="absolute inset-0 hidden h-full w-full object-cover grayscale md:block"
+        />
+      )}
       <div
         class="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,14,10,0.12),rgba(18,14,10,0.45))]"
       >
@@ -221,11 +230,16 @@ const withBase = (path: string) => {
         class="overflow-hidden rounded-[2.25rem] border border-[#d7c8b1] bg-[#efe6d7] shadow-[0_30px_70px_rgba(44,31,18,0.10)]"
       >
         <div class="media-frame relative aspect-3/4">
-          <img
-            alt={data.story.title}
-            class="absolute inset-0 h-full w-full object-cover grayscale"
-            src={withBase(data.story.image)}
-          />
+          {storyImage && (
+            <Picture
+              src={storyImage}
+              alt={data.story.title}
+              loading="lazy"
+              decoding="async"
+              formats={['webp']}
+              class="absolute inset-0 h-full w-full object-cover grayscale"
+            />
+          )}
           <div
             class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.28))]"
           >
@@ -347,14 +361,19 @@ const withBase = (path: string) => {
       <div
         class="overflow-hidden rounded-[2.5rem] border border-[#d7c8b1] bg-[#ece2d2] shadow-[0_30px_70px_rgba(44,31,18,0.12)]"
       >
-        <div
-          class="relative flex min-h-112 items-end bg-[linear-gradient(135deg,rgba(199,172,126,0.52),rgba(248,241,231,0.95))]"
-        >
-          <img
-            alt={data.venue.mapLabel}
-            class="absolute inset-0 h-full w-full object-cover grayscale"
-            src={withBase("/elite-vows/maps.jpg")}
-          />
+          <div
+            class="relative flex min-h-112 items-end bg-[linear-gradient(135deg,rgba(199,172,126,0.52),rgba(248,241,231,0.95))]"
+          >
+            {venueMapImage && (
+              <Picture
+                src={venueMapImage}
+                alt={data.venue.mapLabel}
+                loading="lazy"
+                decoding="async"
+                formats={['webp']}
+                class="absolute inset-0 h-full w-full object-cover grayscale"
+              />
+            )}
           <div
             class="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.28))]"
           >

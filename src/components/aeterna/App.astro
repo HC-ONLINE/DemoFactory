@@ -1,5 +1,18 @@
 ---
+import { getImage } from 'astro:assets';
 import "@/components/aeterna/style.css";
+
+import prehistoriaImg from '@/assets/aeterna/prehistoria.png';
+import egipciaImg from '@/assets/aeterna/egipcia.png';
+import greciaImg from '@/assets/aeterna/grecia.png';
+import romanaImg from '@/assets/aeterna/romana.png';
+import medievalImg from '@/assets/aeterna/medieval.png';
+import renacimientoImg from '@/assets/aeterna/renacimiento.png';
+import descubrimientosImg from '@/assets/aeterna/descubrimientos.png';
+import ilustracionImg from '@/assets/aeterna/ilustracion.png';
+import industrialImg from '@/assets/aeterna/industrial.png';
+import modernaImg from '@/assets/aeterna/moderna.png';
+import cyberpunkImg from '@/assets/aeterna/cyberpunk.png';
 
 interface DemoLink {
   label: string;
@@ -63,24 +76,56 @@ interface DemoData {
 
 const { data } = Astro.props as { data: DemoData };
 
-const withBase = (path: string) => {
-  if (
-    !path ||
-    path.startsWith("#") ||
-    path.startsWith("http://") ||
-    path.startsWith("https://") ||
-    path.startsWith("mailto:") ||
-    path.startsWith("tel:")
-  ) {
-    return path;
-  }
-
-  const base = import.meta.env.BASE_URL.endsWith("/")
-    ? import.meta.env.BASE_URL
-    : `${import.meta.env.BASE_URL}/`;
-  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
-  return `${base}${normalizedPath}`.replace(/\/+/g, "/");
+const imageMap: Record<string, any> = {
+  '/aeterna/prehistoria.png': prehistoriaImg,
+  '/aeterna/egipcia.png': egipciaImg,
+  '/aeterna/grecia.png': greciaImg,
+  '/aeterna/romana.png': romanaImg,
+  '/aeterna/medieval.png': medievalImg,
+  '/aeterna/renacimiento.png': renacimientoImg,
+  '/aeterna/descubrimientos.png': descubrimientosImg,
+  '/aeterna/ilustracion.png': ilustracionImg,
+  '/aeterna/industrial.png': industrialImg,
+  '/aeterna/moderna.png': modernaImg,
+  '/aeterna/cyberpunk.png': cyberpunkImg,
 };
+
+const getImageUrl = async (path: string): Promise<string> => {
+  const imgModule = imageMap[path];
+  if (imgModule) {
+    const optimized = await getImage({ src: imgModule, format: 'webp' });
+    return optimized.src;
+  }
+  return path;
+};
+
+const epochImages = await Promise.all([
+  getImageUrl(data.epochs.prehistory.image),
+  getImageUrl(data.epochs.egypt.image),
+  getImageUrl(data.epochs.greece.image),
+  getImageUrl(data.epochs.rome.image),
+  getImageUrl(data.epochs.medieval.image),
+  getImageUrl(data.epochs.renaissance.image),
+  getImageUrl(data.epochs.discovery.image),
+  getImageUrl(data.epochs.enlightenment.image),
+  getImageUrl(data.epochs.industrial.image),
+  getImageUrl(data.epochs.modern.image),
+  getImageUrl(data.epochs.cyberpunk.image),
+]);
+
+const [
+  prehistoryBg,
+  egyptBg,
+  greeceBg,
+  romeBg,
+  medievalBg,
+  renaissanceBg,
+  discoveryBg,
+  enlightenmentBg,
+  industrialBg,
+  modernBg,
+  cyberpunkBg,
+] = epochImages;
 ---
 
 <div class="site-header" id="site-header" aria-label="Encabezado del sitio">
@@ -144,7 +189,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-prehistory" data-epoch="1" id="prehistoria">
   <div
     class="epoch-bg prehistory-bg"
-    style={`background-image: url('${withBase(data.epochs.prehistory.image)}')`}
+    style={`background-image: url('${prehistoryBg}')`}
   >
   </div>
   <div class="epoch-overlay prehistory-overlay"></div>
@@ -186,7 +231,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-egypt" data-epoch="2" id="egipcia">
   <div
     class="epoch-bg egypt-bg"
-    style={`background-image: url('${withBase(data.epochs.egypt.image)}')`}
+    style={`background-image: url('${egyptBg}')`}
   >
   </div>
   <div class="epoch-overlay egypt-overlay"></div>
@@ -224,7 +269,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-greece" data-epoch="3" id="grecia">
   <div
     class="epoch-bg greece-bg"
-    style={`background-image: url('${withBase(data.epochs.greece.image)}')`}
+    style={`background-image: url('${greeceBg}')`}
   >
   </div>
   <div class="epoch-overlay greece-overlay"></div>
@@ -263,7 +308,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-rome" data-epoch="4" id="romana">
   <div
     class="epoch-bg rome-bg"
-    style={`background-image: url('${withBase(data.epochs.rome.image)}')`}
+    style={`background-image: url('${romeBg}')`}
   >
   </div>
   <div class="epoch-overlay rome-overlay"></div>
@@ -298,7 +343,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-medieval" data-epoch="5" id="medieval">
   <div
     class="epoch-bg medieval-bg"
-    style={`background-image: url('${withBase(data.epochs.medieval.image)}')`}
+    style={`background-image: url('${medievalBg}')`}
   >
   </div>
   <div class="epoch-overlay medieval-overlay"></div>
@@ -340,7 +385,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-renaissance" data-epoch="6" id="renacimiento">
   <div
     class="epoch-bg renaissance-bg"
-    style={`background-image: url('${withBase(data.epochs.renaissance.image)}')`}
+    style={`background-image: url('${renaissanceBg}')`}
   >
   </div>
   <div class="epoch-overlay renaissance-overlay"></div>
@@ -382,7 +427,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-discovery" data-epoch="7" id="descubrimientos">
   <div
     class="epoch-bg discovery-bg"
-    style={`background-image: url('${withBase(data.epochs.discovery.image)}')`}
+    style={`background-image: url('${discoveryBg}')`}
   >
   </div>
   <div class="epoch-overlay discovery-overlay"></div>
@@ -424,7 +469,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-enlightenment" data-epoch="8" id="ilustracion">
   <div
     class="epoch-bg enlightenment-bg"
-    style={`background-image: url('${withBase(data.epochs.enlightenment.image)}')`}
+    style={`background-image: url('${enlightenmentBg}')`}
   >
   </div>
   <div class="epoch-overlay enlightenment-overlay"></div>
@@ -468,7 +513,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-industrial" data-epoch="9" id="industrial">
   <div
     class="epoch-bg industrial-bg"
-    style={`background-image: url('${withBase(data.epochs.industrial.image)}')`}
+    style={`background-image: url('${industrialBg}')`}
   >
   </div>
   <div class="epoch-overlay industrial-overlay"></div>
@@ -506,7 +551,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-modern" data-epoch="10" id="moderna">
   <div
     class="epoch-bg modern-bg"
-    style={`background-image: url('${withBase(data.epochs.modern.image)}')`}
+    style={`background-image: url('${modernBg}')`}
   >
   </div>
   <div class="epoch-overlay modern-overlay"></div>
@@ -548,7 +593,7 @@ const withBase = (path: string) => {
 <section class="epoch epoch-cyber" data-epoch="11" id="cyberpunk">
   <div
     class="epoch-bg cyber-bg"
-    style={`background-image: url('${withBase(data.epochs.cyberpunk.image)}')`}
+    style={`background-image: url('${cyberpunkBg}')`}
   >
   </div>
   <div class="epoch-overlay cyber-overlay"></div>

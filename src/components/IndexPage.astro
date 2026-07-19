@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+import { getImage } from '@/utils/image-registry';
 import Layout from "@/layouts/Layout.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import type { IndexData } from "@/types/index-page";
@@ -124,43 +126,51 @@ const footerLinks = data.footer?.links ?? [];
           class="mt-14 grid gap-10 sm:grid-cols-2 lg:gap-x-12 lg:gap-y-14"
         >
           {
-            data.demos.map((demo) => (
-              <article class="group flex flex-col">
-                <a
-                  href={withBase(demo.url)}
-                  class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300 dark:bg-neutral-900 dark:ring-neutral-800 dark:group-hover:ring-neutral-700"
-                >
-                  <img
-                    src={withBase(demo.image)}
-                    alt={demo.name}
-                    class="w-full transition duration-500 group-hover:scale-[1.02]"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </a>
-
-                <div class="mt-5 flex flex-1 flex-col">
-                  <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
-                    <a
-                      href={withBase(demo.url)}
-                      class="transition hover:text-neutral-600 dark:hover:text-neutral-300"
-                    >
-                      {demo.name}
-                    </a>
-                  </h2>
-                  <p class="mt-2 flex-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-                    {demo.description}
-                  </p>
+            data.demos.map((demo) => {
+              const demoImage = getImage(demo.image);
+              return (
+                <article class="group flex flex-col">
                   <a
                     href={withBase(demo.url)}
-                    class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 transition hover:gap-2.5 dark:text-neutral-100 dark:hover:text-neutral-300"
+                    class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300 dark:bg-neutral-900 dark:ring-neutral-800 dark:group-hover:ring-neutral-700"
                   >
-                    {data.viewProjectLabel}
-                    <span aria-hidden="true">→</span>
+                    {demoImage ? (
+                      <Picture
+                        src={demoImage}
+                        alt={demo.name}
+                        loading="lazy"
+                        decoding="async"
+                        formats={['webp']}
+                        class="w-full transition duration-500 group-hover:scale-[1.02]"
+                      />
+                    ) : (
+                      <div class="w-full h-48 bg-neutral-200 dark:bg-neutral-800" />
+                    )}
                   </a>
-                </div>
-              </article>
-            ))
+
+                  <div class="mt-5 flex flex-1 flex-col">
+                    <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+                      <a
+                        href={withBase(demo.url)}
+                        class="transition hover:text-neutral-600 dark:hover:text-neutral-300"
+                      >
+                        {demo.name}
+                      </a>
+                    </h2>
+                    <p class="mt-2 flex-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+                      {demo.description}
+                    </p>
+                    <a
+                      href={withBase(demo.url)}
+                      class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 transition hover:gap-2.5 dark:text-neutral-100 dark:hover:text-neutral-300"
+                    >
+                      {data.viewProjectLabel}
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </article>
+              );
+            })
           }
         </div>
       </section>
