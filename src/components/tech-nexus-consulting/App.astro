@@ -236,6 +236,7 @@ const heroImage = getImage(data.hero.image);
                 src={heroImage}
                 alt={data.hero.title}
                 loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 formats={['webp']}
                 class="h-105 w-full rounded-[1.4rem] object-cover"

@@ -147,6 +147,7 @@ const philosophyImage = getImage(data.philosophy.image);
             src={heroImage}
             alt={data.hero.title}
             loading="eager"
+            fetchPriority="high"
             decoding="async"
             formats={['webp']}
             class="h-full w-full object-cover"

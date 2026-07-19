@@ -120,8 +120,9 @@ const footerLinks = data.footer?.links ?? [];
           class="mt-14 grid gap-10 sm:grid-cols-2 lg:gap-x-12 lg:gap-y-14"
         >
           {
-            data.demos.map((demo) => {
+            data.demos.map((demo, index) => {
               const demoImage = getImage(demo.image);
+              const isFirst = index === 0;
               return (
                 <article class="group flex flex-col">
                   <a
@@ -132,7 +133,8 @@ const footerLinks = data.footer?.links ?? [];
                       <Picture
                         src={demoImage}
                         alt={demo.name}
-                        loading="lazy"
+                        loading={isFirst ? "eager" : "lazy"}
+                        fetchPriority={isFirst ? "high" : "auto"}
                         decoding="async"
                         formats={['webp']}
                         class="w-full transition duration-500 group-hover:scale-[1.02]"

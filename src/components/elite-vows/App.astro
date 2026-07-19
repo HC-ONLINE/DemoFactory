@@ -179,6 +179,7 @@ const venueMapImage = getImage('/elite-vows/maps.jpg');
           src={heroImage}
           alt={data.hero.title}
           loading="eager"
+          fetchPriority="high"
           decoding="async"
           formats={['webp']}
           class="absolute inset-0 hidden h-full w-full object-cover grayscale md:block"
