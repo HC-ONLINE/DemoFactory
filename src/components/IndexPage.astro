@@ -133,8 +133,8 @@ const footerLinks = data.footer?.links ?? [];
                       <Picture
                         src={demoImage}
                         alt={demo.name}
-                        widths={[400, 600, 800, 1200]}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 504px"
+                        widths={[320, 480, 640, 800, 1200]}
+                        sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) 50vw, 504px"
                         loading={isFirst ? "eager" : "lazy"}
                         fetchPriority={isFirst ? "high" : "auto"}
                         decoding="async"
