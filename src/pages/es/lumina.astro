@@ -13,13 +13,12 @@ const Content = page.Content;
   lang="es"
   bodyClass="min-h-full bg-[#121414] text-[#e2e2e2] antialiased"
 >
-  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
-  <link slot="head" rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-  <link
-    slot="head"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@500;700&display=swap"
-    rel="stylesheet"
-  />
+
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" /></noscript>
+  </Fragment>
+
   <LuminaApp data={data}>
     <Content />
   </LuminaApp>

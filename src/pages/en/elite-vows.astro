@@ -13,18 +13,12 @@ const Content = page.Content;
   lang="en"
   bodyClass="min-h-full bg-[#f6f1e8] text-[#1f1a17] antialiased [font-family:'Montserrat',sans-serif]"
 >
-  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
-  <link
-    slot="head"
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin="anonymous"
-  />
-  <link
-    slot="head"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
-    rel="stylesheet"
-  />
+
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" /></noscript>
+  </Fragment>
+
   <EliteVowsApp data={data}>
     <Content />
   </EliteVowsApp>
