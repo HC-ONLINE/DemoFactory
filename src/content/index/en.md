@@ -42,6 +42,10 @@ demos:
     description: "Immersive weather application displaying real-time meteorological conditions with dynamic animations and atmospheric design."
     image: "/index/en/aura-weather.png"
     url: "/en/aura_weather"
+  - name: "PixelPress"
+    description: "A modern gaming news blog with a retro pixel-art vibe. News, reviews, and analysis from the gaming world."
+    image: "/index/en/pixelpress.png"
+    url: "https://pixelpress.henriquezandres856.workers.dev/"
 languageSwitch:
   label: "Cambiar a Español"
   url: "/"
