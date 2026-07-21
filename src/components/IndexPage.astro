@@ -127,6 +127,8 @@ const footerLinks = data.footer?.links ?? [];
                 <article class="group flex flex-col">
                   <a
                     href={withBase(demo.url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     class="block overflow-hidden rounded-xl bg-neutral-100 shadow-sm ring-1 ring-neutral-200/60 transition duration-300 group-hover:shadow-md group-hover:ring-neutral-300 dark:bg-neutral-900 dark:ring-neutral-800 dark:group-hover:ring-neutral-700"
                   >
                     {demoImage ? (
@@ -150,6 +152,8 @@ const footerLinks = data.footer?.links ?? [];
                     <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
                       <a
                         href={withBase(demo.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="transition hover:text-neutral-600 dark:hover:text-neutral-300"
                       >
                         {demo.name}
@@ -160,6 +164,8 @@ const footerLinks = data.footer?.links ?? [];
                     </p>
                     <a
                       href={withBase(demo.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-900 transition hover:gap-2.5 dark:text-neutral-100 dark:hover:text-neutral-300"
                     >
                       {data.viewProjectLabel}
